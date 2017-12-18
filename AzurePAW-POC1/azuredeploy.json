@@ -1,8 +1,260 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "variables": {},
-  "resources": [],
+  "parameters": {
+    "subscriptionID": {
+      "type": "string",
+      "metadata": {
+        "description": "Subscription ID is used to provide access path to the Key Vault"
+      },
+      "defaultValue": "Copy and Paste Subscription ID here. It is provided on the instructions OneNote page."
+    },
+    "domainName": {
+      "type": "string",
+      "allowedValues": [
+        "contoso.com"
+      ],
+      "metadata": {
+        "description": "Currently hardcoded to contoso.com. The domain name needs to be consisting of one or more labels separated by . E.g. contoso.com"
+      },
+      "defaultValue": "contoso.com"
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Administrator of the new VMs and Domain"
+      },
+      "defaultValue": "labadmin"
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password for the Administrator account of the new VMs and Domain. If you do not change it, then it will look like this: Subscription#SUBSCRIPTIONID"
+      },
+      "defaultValue": "[concat('Subscription#',subscription().subscriptionId)]"
+    },
+    "sourceClientIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Internet IP of the computer that will RDP into this lab. Change this to * to allow all Internet devices to brute force your lab or find out external IP or subnet for your device to lock down access to your lab from the Internet. Choice is yours."
+      },
+      "defaultValue": "127.0.0.1"
+    },
+    "deployADCS": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "It deployes Enterprise Issuing CA with set of certificate templates"
+      }
+    },
+    "deployADFS": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "It deployes ADFS server in the backend and ADFS Proxy in the DMZ."
+      }
+    },
+    "deployAADConnect": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "It deployes AAD Connect server"
+      }
+    },
+    "deployAzurePAW1": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "This VM is joined to ADDS. Deploy this VM if need to test ATA."
+      }
+    },
+    "deployAzurePAW2": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "This VM is joined to ADDS. Deploy this VM if need to test ATA."
+      }
+    }
+  },
+  "variables": {
+    "assetLocation": "https://raw.githubusercontent.com/dmitriilezine/AzurePAW-POC1/master/AzurePAW-POC1",
+    "assetLocationStorageAccount": "https://azurepaw.blob.core.windows.net",
+    "VMSize": "Standard_A2",
+    "OSVersion": "2016-Datacenter",
+    "virtualNetworkAddressRange": "10.0.0.0/16",
+    "backendNetworkSubnet": "10.0.1.0/24",
+    "frontendNetworkSubnet": "10.0.2.0/24",
+    "azurepawNetworkSubnet": "10.0.3.0/24",
+    "primaryDC1IpAddress": "10.0.1.4",
+    "primaryDC2IpAddress": "10.0.1.5",
+    "primaryADCSIpAddress": "10.0.1.6",
+    "primaryAADConnectIpAddress": "10.0.1.7",
+    "primaryADFSIpAddress": "10.0.1.8",
+    "primaryADFSProxyIpAddress": "10.0.2.5",
+    "primaryJumpServerIpAddress": "10.0.2.4",
+    "primaryAzurePAW1IpAddress": "10.0.3.4",
+    "primaryAzurePAW2IpAddress": "10.0.3.5",
+    "vnetTemplateURL": "[concat(variables('assetLocation'),'/data/vNetDeployment.json')]",
+    "nsgTemplateURL": "[concat(variables('assetLocation'),'/data/nsgDeployment.json')]",
+    "publicIPTemplateURL": "[concat(variables('assetLocation'),'/data/publicIP.json')]",
+    "dc1TemplateURL": "[concat(variables('assetLocation'),'/data/dc1Vm.json')]",
+    "dc2TemplateURL": "[concat(variables('assetLocation'),'/data/dc2Vm.json')]",
+    "adcsVMTemplateURL": "[concat(variables('assetLocation'),'/data/adcsVm.json')]",
+    "aadConnectVMTemplateURL": "[concat(variables('assetLocation'),'/data/aadConnectVm.json')]",
+    "adfsVMTemplateURL": "[concat(variables('assetLocation'),'/data/adfsVm.json')]",
+    "adfsProxyVMTemplateURL": "[concat(variables('assetLocation'),'/data/adfsProxyVm.json')]",
+    "jumpServerTemplateURL": "[concat(variables('assetLocation'),'/data/jumpServerVm.json')]",
+    "AzurePAW1VMTemplateURL": "[concat(variables('assetLocation'),'/data/PAW1VM.json')]",
+    "AzurePAW2VMTemplateURL": "[concat(variables('assetLocation'),'/data/PAW2VM.json')]",
+    "deployPrimaryAdTemplateURL": "[concat(variables('assetLocation'),'/data/deployPrimaryAD.json')]",
+    "deployDC2AdTemplateURL": "[concat(variables('assetLocation'),'/data/promoteSecondDC.json')]",
+    "deployADCSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADCS.json')]",
+    "deployAADConnectTemplateURL": "[concat(variables('assetLocation'),'/data/deployAADConnect.json')]",
+    "deployADFSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFS.json')]",
+    "deployADFSProxyTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFSProxy.json')]",
+    "dc1VMName": "[substring(concat('DC1-',resourceGroup().Name),0,5)]",
+    "dc2VMName": "[substring(concat('DC2-',resourceGroup().Name),0,5)]",
+    "adcsVMName": "[substring(concat('ADCS1',resourceGroup().Name),0,5)]",
+    "aadConnectVMName": "[substring(concat('AADC1',resourceGroup().Name),0,5)]",
+    "jumpVMName": "[substring(concat('JumpBox',resourceGroup().Name),0,7)]",
+    "adfsVMName": "[substring(concat('ADFS1',resourceGroup().Name),0,5)]",
+    "adfsProxyVMName": "[substring(concat('ADFSProxy',resourceGroup().Name),0,9)]",
+    "paw1VMName": "[substring(concat('PAW1',resourceGroup().Name),0,5)]",
+    "paw2VMName": "[substring(concat('PAW2',resourceGroup().Name),0,5)]",
+    "dnsPrefix": "[tolower(concat(resourceGroup().name,'jump'))]",
+    "dc1VmDeployment": "CreateADDC1VM",
+    "dc1VmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('dc1VmDeployment'))]",
+    "dc2VmDeployment": "CreateADDC2VM",
+    "dc2VmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('dc2VmDeployment'))]",
+    "deployVNet": "DeployVNet",
+    "deployVNetId": "[concat('Microsoft.Resources/deployments/', variables('deployVNet'))]",
+    "deployNSGs": "DeployNSGs",
+    "deployNSGsId": "[concat('Microsoft.Resources/deployments/', variables('deployNSGs'))]",
+    "deployPrimaryAd": "ConfigureAD",
+    "deployPrimaryAdId": "[concat('Microsoft.Resources/deployments/', variables('deployPrimaryAd'))]",
+    "deployDC2Ad": "ConfigureADDC2",
+    "deployDC2AdId": "[concat('Microsoft.Resources/deployments/', variables('deployDC2Ad'))]",
+    "updateVNetDNS1": "UpdateVNetDNS",
+    "updateVNetDNS2": "UpdateVNetDNS2",
+    "vnetwithDNSTemplateURL": "[concat(variables('assetLocation'),'/data/vnetDNSupdate.json')]",
+    "adcsVmDeployment": "CreateADCSVM",
+    "adcsVmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('adcsVmDeployment'))]",
+    "aadConnectVmDeployment": "CreateAADConnectVM",
+    "aadConnectVmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadConnectVmDeployment'))]",
+    "jumpVmDeployment": "CreateJumpBoxVM",
+    "jumpVmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('jumpVmDeployment'))]",
+    "adfsVmDeployment": "CreateADFSVM",
+    "adfsVmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('adfsVmDeployment'))]",
+    "adfsProxyVmDeployment": "CreateADFSProxyVM",
+    "adfsProxyVmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('adfsProxyVmDeployment'))]",
+    "paw1VMDeployment": "CreatePAW1VM",
+    "paw1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('paw1VMDeployment'))]",
+    "paw2VMDeployment": "CreatePAW2VM",
+    "paw2VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('paw2VMDeployment'))]",
+    "adcsDeployment": "DeployADCS",
+    "adcsDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('adcsDeployment'))]",
+    "createADCSTemplatesDeployment": "CreateADCSTemplates",
+    "createADCSDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('createADCSTemplatesDeployment'))]",
+    "registerADCSTemplatesDeployment": "RegisterADCSTemplates",
+    "registerADCSTemplatesDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('registerADCSTemplatesDeployment'))]",
+
+    "vaultName": "CRSecrets",
+    "secretName": "crlabkey2",
+    "secretnameSASurl": "labSASurl",
+
+    "KeyVaultRG": "/resourceGroups/Storage",
+    "keyVaultID": "[concat('/subscriptions/', parameters('subscriptionID'), variables('KeyVaultRG'), '/providers/Microsoft.KeyVault/vaults/', variables('vaultName'))]",
+    "adAvailabilitySetName": "addsAvailabiltySet",
+    "imageOffer": "WindowsServer",
+    "imagePublisher": "MicrosoftWindowsServer",
+
+    "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
+    "publiclbID": "[resourceId('Microsoft.Network/loadBalancers',variables('publicLBName'))]",
+    "publiclbFEConfigID": "[concat(variables('publiclbID'),'/frontendIPConfigurations/',variables('lbFE'))]",
+    "rdpNATRuleID": "[concat(variables('publiclbID'),'/inboundNatRules/',variables('rpdNAT'))]",
+    "deployPublicIP": "DeployPublicIP",
+    "deployPublicIPId": "[concat('Microsoft.Resources/deployments/', variables('deployPublicIP'))]",
+    "publicLBName": "[concat('ADPLB',resourceGroup().name)]",
+    "publicIPAddressName": "[concat('ADlbPublicIP',resourceGroup().name)]",
+    "lbFE": "[concat('ADLBFE',resourceGroup().name)]",
+    "rpdNAT": "[concat('ADRDPNAT',resourceGroup().name)]",
+    "rdpPort": "3389",
+
+    "beNSGName": "[concat('BackEndNSG',resourceGroup().name)]",
+    "beNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('beNSGName'))]",
+    "feNSGName": "[concat('FrontEndNSG',resourceGroup().name)]",
+    "feNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('feNSGName'))]",
+    "pawNSGName": "[concat('PAW-NSG',resourceGroup().name)]",
+    "pawNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('pawNSGName'))]",
+    "dc1NICName": "[concat('DC1-Nic',resourceGroup().name)]",
+    "dc2NICName": "[concat('DC2-Nic',resourceGroup().name)]",
+    "adcsNICName": "[concat('ADCS-Nic',resourceGroup().name)]",
+    "aadconnectNICName": "[concat('AADC-Nic',resourceGroup().name)]",
+    "jumpNICName": "[concat('JumpBoxNic',resourceGroup().name)]",
+    "adfsNICName": "[concat('ADFS-Nic',resourceGroup().name)]",
+    "adfsproxyNICName": "[concat('ADFSP-Nic',resourceGroup().name)]",
+    "paw1NICName": "[concat('PAW1-Nic',resourceGroup().name)]",
+    "paw2NICName": "[concat('PAW2-Nic',resourceGroup().name)]",
+    "virtualNetworkName": "[concat('ADVNET',resourceGroup().name)]",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+    "backendSubnetName": "[concat('BackEndSubnet',resourceGroup().name)]",
+    "backendSubnetID": "[concat(variables('vnetID'),'/subnets/',variables('backendSubnetName'))]",
+    "frontendSubnetName": "[concat('FrontEndSubnet',resourceGroup().name)]",
+    "frontendSubnetID": "[concat(variables('vnetID'),'/subnets/',variables('frontendSubnetName'))]",
+    "pawSubnetName": "[concat('pawSubnet',resourceGroup().name)]",
+    "pawSubnetID": "[concat(variables('vnetID'),'/subnets/',variables('pawSubnetName'))]",
+    "subnets": [
+      {
+        "name": "[variables('backendSubnetName')]",
+        "properties": {
+          "addressPrefix": "[variables('backendNetworkSubnet')]",
+          "networkSecurityGroup": {
+            "id": "[variables('beNSGID')]"
+          }
+        }
+      },
+      {
+        "name": "[variables('frontendSubnetName')]",
+        "properties": {
+          "addressPrefix": "[variables('frontendNetworkSubnet')]",
+          "networkSecurityGroup": {
+            "id": "[variables('feNSGID')]"
+          }
+        }
+      },
+      {
+        "name": "[variables('pawSubnetName')]",
+        "properties": {
+          "addressPrefix": "[variables('azurepawNetworkSubnet')]",
+          "networkSecurityGroup": {
+            "id": "[variables('pawNSGID')]"
+          }
+        }
+      }
+    ]
+  },
+  "resources": [
+
+  ],
   "outputs": {}
 }
