@@ -129,6 +129,8 @@
     "deployPrimaryAdTemplateURL": "[concat(variables('assetLocation'),'/data/deployPrimaryAD.json')]",
     "deployDC2AdTemplateURL": "[concat(variables('assetLocation'),'/data/promoteSecondDC.json')]",
     "deployADCSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADCS.json')]",
+    "createCertificateTemplatesTemplateURL": "[concat(variables('assetLocation'),'/data/createCertTemplates.json')]",
+    "registerADCSTemplatesTemplateURL": "[concat(variables('assetLocation'),'/data/registerCertTemplates.json')]",
     "deployAADConnectTemplateURL": "[concat(variables('assetLocation'),'/data/deployAADConnect.json')]",
     "deployADFSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFS.json')]",
     "deployADFSProxyTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFSProxy.json')]",
@@ -646,6 +648,7 @@
       }
     },
     {
+      "comments": "Deploy ADCS VM",
       "condition": "[equals(parameters('deployADCS'),'Yes')]",
       "name": "[variables('adcsVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -691,6 +694,7 @@
       }
     },
     {
+      "comments": "Deploy Azure AD Connect VM",
       "condition": "[equals(parameters('deployAADConnect'),'Yes')]",
       "name": "[variables('aadConnectVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -736,6 +740,7 @@
       }
     },
     {
+      "comments": "Deploy ADFS VM",
       "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "name": "[variables('adfsVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -781,6 +786,7 @@
       }
     },
     {
+      "comments": "Deploy ADFS Proxy VM. It is deployed if ADFS VM is deployed first.",
       "name": "[variables('adfsProxyVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -826,6 +832,7 @@
       }
     },
     {
+      "comments": "Deploy Azure PAW #1 VM",
       "condition": "[equals(parameters('deployAzurePAW1'),'Yes')]",
       "name": "[variables('paw1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -871,6 +878,7 @@
       }
     },
     {
+      "comments": "Deploy Azure PAW #2 VM",
       "condition": "[equals(parameters('deployAzurePAW2'),'Yes')]",
       "name": "[variables('paw2VmDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -916,7 +924,7 @@
       }
     },
     {
-      "comments": "Install ADCS",
+      "comments": "Install ADCS on ADCS VM",
       "name": "[variables('adcsDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -928,6 +936,82 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[variables('deployADCSTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "assetLocationStorageAccount": {
+            "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "storageAccountKeyviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "Create Certificate Templates in ADDS",
+      "name": "[variables('createADCSTemplatesDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('adcsDeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('createCertificateTemplatesTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "assetLocationStorageAccount": {
+            "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "storageAccountKeyviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "Register Certificate Templates with ADCS",
+      "name": "[variables('registerADCSTemplatesDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('createADCSTemplatesDeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('registerADCSTemplatesTemplateURL')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
