@@ -181,8 +181,8 @@
     "registerADCSTemplatesDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('registerADCSTemplatesDeployment'))]",
 
     "vaultName": "CRSecrets",
-    "secretName": "crlabkey2",
-    "secretnameSASurl": "labSASurl",
+    "secretName": "AzurePAWPOC1SAKey1",
+    "secretnameSASurl": "AzurePAWPOC1SAS",
 
     "KeyVaultRG": "/resourceGroups/Storage",
     "keyVaultID": "[concat('/subscriptions/', parameters('subscriptionID'), variables('KeyVaultRG'), '/providers/Microsoft.KeyVault/vaults/', variables('vaultName'))]",
