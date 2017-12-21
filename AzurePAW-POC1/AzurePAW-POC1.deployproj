@@ -47,6 +47,7 @@
     <None Include="data\publicIP.json" />
     <None Include="data\registerCertTemplates.json" />
     <None Include="data\vNetDeployment.json" />
+    <None Include="data\vnetDNSupdate.json" />
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>

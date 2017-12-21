@@ -939,6 +939,9 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "adcsVMName": {
+            "value": "[variables('adcsVMName')]"
+          },
           "domainName": {
             "value": "[parameters('domainName')]"
           },
@@ -977,6 +980,9 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "dc1VMName": {
+            "value": "[variables('dc1VMName')]"
+          },
           "domainName": {
             "value": "[parameters('domainName')]"
           },
@@ -1015,6 +1021,9 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "adcsVMName": {
+            "value": "[variables('adcsVMName')]"
+          },
           "domainName": {
             "value": "[parameters('domainName')]"
           },
