@@ -5,7 +5,7 @@
     "adcsVMName": {
       "type": "string",
       "metadata": {
-        "description": "The VM name of Primary AD"
+        "description": "The VM name of ADCS Server"
       }
     },
     "domainName": {
@@ -40,13 +40,12 @@
     }
   },
   "variables": {
-    "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/registerADCSTemplates.ps1')]",
-    "adcsURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/registerADCSTemplates.zip')]"
+    "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/Register-CertificateTemplates.ps1')]"
   },
   "resources": [
     {
-      "name": "[concat(parameters('adcsVMName'),'/deployCRLabOption1')]",
-      "comments": "install ADCS on ADCS VM via Script extension",
+      "name": "[concat(parameters('adcsVMName'),'/RegisterCertificateTemplatesOnCA')]",
+      "comments": "Register Certificate Templates on CA via Script extension",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
@@ -57,12 +56,11 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[variables('psScriptURL')]",
-            "[variables('adcsURL')]"
+            "[variables('psScriptURL')]"
           ]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File registerADCSTemplates.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),'')]",
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File Register-CertificateTemplates.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),'')]",
           "storageAccountName": "azurepaw",
           "storageAccountKey": "[parameters('storageAccountKeyviaKeyvault')]"
         }

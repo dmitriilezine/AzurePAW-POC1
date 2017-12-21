@@ -5,7 +5,7 @@
     "adcsVMName": {
       "type": "string",
       "metadata": {
-        "description": "The VM name of Primary AD"
+        "description": "The VM name of ADCS Server"
       }
     },
     "domainName": {
@@ -40,12 +40,14 @@
     }
   },
   "variables": {
-    "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/installCA.ps1')]",
-    "adcsURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/installCA.zip')]"
+    "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/initiateInstallCA.ps1')]",
+    "adcsURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/installCA.zip')]",
+    "DSDomainDN": "[concat('DC=contoso,DC=com')]",
+    "CACommonName": "[concat('Contoso CA')]"
   },
   "resources": [
     {
-      "name": "[concat(parameters('adcsVMName'),'/deployCRLabOption1')]",
+      "name": "[concat(parameters('adcsVMName'),'/installADCSRole')]",
       "comments": "install ADCS on ADCS VM via Script extension",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[resourceGroup().location]",
@@ -62,7 +64,7 @@
           ]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File installCA.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),'')]",
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File initiateInstallCA.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),' -DSDomainDN ',variables('DSDomainDN'),' -CACommonName ',variables('CACommonName'),'')]",
           "storageAccountName": "azurepaw",
           "storageAccountKey": "[parameters('storageAccountKeyviaKeyvault')]"
         }

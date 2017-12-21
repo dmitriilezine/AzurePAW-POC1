@@ -26,6 +26,12 @@
         "description": "The password for the Administrator account of the new VMs and Domain"
       }
     },
+    "adcsVMName": {
+      "type": "string",
+      "metadata": {
+        "description": "The VM name of ADCS Server"
+      }
+    },
     "assetLocationStorageAccount": {
       "type": "string",
       "metadata": {
@@ -40,13 +46,14 @@
     }
   },
   "variables": {
-    "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/createCertTemplates.ps1')]",
+    "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/initiateCreateCertTemplates.ps1')]",
     "psScriptZipPackageURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/createCertTemplates.zip')]"
+
   },
   "resources": [
     {
-      "name": "[concat(parameters('dc1VMName'),'/deployCRLabOption1')]",
-      "comments": "deploy OUs and User accounts via Script extension",
+      "name": "[concat(parameters('dc1VMName'),'/CreateCertificateTemplates')]",
+      "comments": "Create Certificate Templates in ADDS via Script extension",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
@@ -62,7 +69,7 @@
           ]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File createCertTemplates.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),'')]",
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File initiateCreateCertTemplates.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),' -CAName ',parameters('adcsVMName'),'')]",
           "storageAccountName": "azurepaw",
           "storageAccountKey": "[parameters('storageAccountKeyviaKeyvault')]"
         }
