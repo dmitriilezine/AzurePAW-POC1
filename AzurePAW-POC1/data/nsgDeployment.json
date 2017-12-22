@@ -485,7 +485,7 @@
       "properties": {
         "securityRules": [
           {
-            "name": "allow_RDP_from_PhysicalDeviceIP - TEST ONLY",
+            "name": "allow_RDP_from_PhysicalDeviceIP_TEST_ONLY",
             "properties": {
               "description": "Allow communication from Internet to PAW",
               "protocol": "Tcp",
