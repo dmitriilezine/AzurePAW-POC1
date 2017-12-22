@@ -12,15 +12,19 @@
     "vNetID": { "type": "string" },
     "beNSGName": { "type": "string" },
     "feNSGName": { "type": "string" },
+    "pawNSGName": { "type": "string" },
     "beSubnetName": { "type": "string" },
     "feSubnetName": { "type": "string" },
+    "pawSubnetName": { "type": "string" },
     "beSubnetId": { "type": "string" },
     "feSubnetId": { "type": "string" },
+    "pawSubnetId": { "type": "string" },
     "sourceClientIP": { "type": "string" }
   },
   "variables": {
     "besubnetrange": "[parameters('subnets')[0].properties.addressPrefix]",
     "feSubnetRange": "[parameters('subnets')[1].properties.addressPrefix]",
+    "pawSubnetRange": "[parameters('subnets')[2].properties.addressPrefix]",
     "location": "[resourceGroup().location]"
   },
   "resources": [
@@ -49,13 +53,13 @@
             }
           },
           {
-            "name": "allow_RDP_to_AD_Servers",
+            "name": "allow_RDP_to_BackEnd_Servers",
             "properties": {
               "description": "Allow RDP to AD Servers",
               "protocol": "Tcp",
               "sourcePortRange": "*",
               "destinationPortRange": "3389",
-              "sourceAddressPrefix": "*",
+              "sourceAddressPrefix": "[variables('feSubnetRange')]",
               "destinationAddressPrefix": "[variables('besubnetrange')]",
               "access": "Allow",
               "priority": 120,
@@ -462,6 +466,33 @@
               "destinationPortRange": "3389",
               "sourceAddressPrefix": "[parameters('sourceClientIP')]",
               "destinationAddressPrefix": "[variables('feSubnetRange')]",
+              "access": "Allow",
+              "priority": 103,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('pawNSGName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "PAW Subnet NSG"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow_RDP_from_PhysicalDeviceIP - TEST ONLY",
+            "properties": {
+              "description": "Allow communication from Internet to PAW",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[parameters('sourceClientIP')]",
+              "destinationAddressPrefix": "[variables('pawSubnetRange')]",
               "access": "Allow",
               "priority": 103,
               "direction": "Inbound"
