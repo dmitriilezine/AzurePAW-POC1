@@ -971,6 +971,9 @@
           "dc1VMName": {
             "value": "[variables('dc1VMName')]"
           },
+          "adcsVMName": {
+            "value": "[variables('adcsVMName')]"
+          },
           "domainName": {
             "value": "[parameters('domainName')]"
           },
