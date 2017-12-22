@@ -917,7 +917,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('adcsVmDeploymentId')]",
+        "[variables('adcsVmDeployment')]",
         "[variables('deployDC2AdId')]"
       ],
       "properties": {
