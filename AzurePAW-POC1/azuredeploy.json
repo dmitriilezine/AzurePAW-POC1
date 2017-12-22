@@ -629,20 +629,8 @@
           "primaryIpAddress": {
             "value": "[variables('primaryJumpServerIpAddress')]"
           },
-          "domainName": {
-            "value": "[parameters('domainName')]"
-          },
           "adRDPNATRuleID": {
             "value": "[variables('rdpNATRuleID')]"
-          },
-          "publicLBName": {
-            "value": "[variables('publicLBName')]"
-          },
-          "lbFE": {
-            "value": "[variables('lbFE')]"
-          },
-          "rpdNAT": {
-            "value": "[variables('rpdNAT')]"
           }
         }
       }
