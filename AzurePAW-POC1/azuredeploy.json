@@ -190,6 +190,8 @@
     "createADCSDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('createADCSTemplatesDeployment'))]",
     "registerADCSTemplatesDeployment": "RegisterADCSTemplates",
     "registerADCSTemplatesDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('registerADCSTemplatesDeployment'))]",
+    "aadconnectDeployment": "DownloadInstalAADConnect",
+    "aadconnectDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadconnectDeployment'))]",
 
     "vaultName": "CRSecrets",
     "secretName": "AzurePAWPOC1SAKey2",
@@ -1056,8 +1058,56 @@
           }
         }
       }
+    },
+    {
+      "comments": "Download and install AAD Connect",
+      "name": "[variables('aadconnectDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('aadConnectVmDeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('deployAADConnectTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "aadVMName": {
+            "value": "[variables('aadConnectVMName')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "assetLocationStorageAccount": {
+            "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "storageAccountKeyviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretName')]"
+            }
+          },
+          "storageAccountSASTokenviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretnameSASurl')]"
+            }
+          }
+        }
+      }
     }
-
 
   ],
   "outputs": {}
