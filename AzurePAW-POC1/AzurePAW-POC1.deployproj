@@ -35,6 +35,7 @@
     <None Include="data\dc1Vm.json" />
     <None Include="data\dc2Vm.json" />
     <None Include="data\deployAADConnect.json" />
+    <None Include="data\deployADCS - Copy.json" />
     <None Include="data\deployADCS.json" />
     <None Include="data\deployADFS.json" />
     <None Include="data\deployADFSProxy.json" />

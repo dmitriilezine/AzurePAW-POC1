@@ -94,6 +94,17 @@
       "metadata": {
         "description": "This VM is joined to ADDS. Deploy this VM if need to test ATA."
       }
+    },
+    "registerTemplatesviaScript": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "Register Cert templates via Script. Remove this after DSC is working..."
+      }
     }
   },
   "variables": {
@@ -949,6 +960,14 @@
               },
               "secretName": "[variables('secretName')]"
             }
+          },
+          "storageAccountSASTokenviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretnameSASurl')]"
+            }
           }
         }
       }
@@ -959,7 +978,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('adcsDeployment')]"
+        "[variables('deployDC2AdId')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -999,11 +1018,13 @@
     },
     {
       "comments": "Register Certificate Templates with ADCS",
+      "condition": "[equals(parameters('RegisterTemplatesviaScript'),'Yes')]",
       "name": "[variables('registerADCSTemplatesDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('createADCSTemplatesDeployment')]"
+        "[variables('createADCSTemplatesDeployment')]",
+        "[variables('deployDC2AdId')]"
       ],
       "properties": {
         "mode": "Incremental",

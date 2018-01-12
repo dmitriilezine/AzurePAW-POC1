@@ -37,50 +37,36 @@
       "metadata": {
         "description": "Key for the Storage account"
       }
-    },
-    "storageAccountSASTokenviaKeyvault": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Key for the Storage account"
-      }
     }
   },
   "variables": {
+    "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/initiateInstallCA.ps1')]",
+    "adcsURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/installCA.zip')]",
     "DSDomainDN": "[concat('DC=contoso,DC=com')]",
-    "CACommonName": "[concat('Contoso CA')]",
-    "caModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/DeployADCS.zip')]",
-    "caConfigurationFunction": "InstallCA.ps1\\InstallADCS"
+    "CACommonName": "[concat('Contoso CA')]"
   },
   "resources": [
     {
-      "name": "[concat(parameters('adcsVMName'),'/InstallADCS')]",
+      "name": "[concat(parameters('adcsVMName'),'/installADCSRole')]",
+      "comments": "install ADCS on ADCS VM via Script extension",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
       "properties": {
-        "publisher": "Microsoft.Powershell",
-        "type": "DSC",
-        "typeHandlerVersion": "2.8",
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.9",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "modulesUrl": "[variables('caModulesURL')]",
-          "configurationFunction": "[variables('caConfigurationFunction')]",
-          "SasToken": "[parameters('storageAccountSASTokenviaKeyvault')]",
-          "properties": {
-            "domainName": "[parameters('domainName')]",
-            "CACommonName": "[variables('CACommonName')]",
-            "DSDomainDN": "[variables('DSDomainDN')]",
-            "adminCreds": {
-              "userName": "[parameters('adminUserName')]",
-              "password": "PrivateSettingsRef:adminPassword"
-            }
-          }
+          "fileUris": [
+            "[variables('psScriptURL')]",
+            "[variables('adcsURL')]"
+          ]
         },
         "protectedSettings": {
-          "items": {
-            "adminPassword": "[parameters('adminPassword')]",
-            "configurationUrlSasToken": "[parameters('storageAccountSASTokenviaKeyvault')]"
-          }
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File initiateInstallCA.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),' -DSDomainDN ',variables('DSDomainDN'),' -CACommonName ',variables('CACommonName'),'')]",
+          "storageAccountName": "azurepaw",
+          "storageAccountKey": "[parameters('storageAccountKeyviaKeyvault')]"
         }
       }
     }
