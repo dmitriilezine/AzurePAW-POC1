@@ -790,7 +790,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]",
         "[variables('adfsVmDeployment')]"
       ],
       "properties": {
@@ -928,8 +927,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('adcsVmDeployment')]",
-        "[variables('deployDC2AdId')]"
+        "[variables('adcsVmDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
