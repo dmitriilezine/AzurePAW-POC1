@@ -70,6 +70,7 @@
             "domainName": "[parameters('domainName')]",
             "CACommonName": "[variables('CACommonName')]",
             "DSDomainDN": "[variables('DSDomainDN')]",
+            "CAName": "[parameters('adcsVMName')]",
             "adminCreds": {
               "userName": "[parameters('adminUserName')]",
               "password": "PrivateSettingsRef:adminPassword"
