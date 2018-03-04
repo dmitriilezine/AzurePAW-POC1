@@ -36,7 +36,7 @@
     "primaryIpAddress": {
       "type": "string",
       "metadata": {
-        "description": "PrimaryIPAddress if AD VM"
+        "description": "PrimaryIPAddress of VM"
       }
     },
     "subnetResourceID": {

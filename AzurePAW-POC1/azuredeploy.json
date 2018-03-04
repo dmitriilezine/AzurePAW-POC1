@@ -854,7 +854,7 @@
             "value": "[parameters('adminPassword')]"
           },
           "subnetResourceID": {
-            "value": "[variables('backendSubnetID')]"
+            "value": "[variables('pawSubnetID')]"
           },
           "windowsImageSKU": {
             "value": "[variables('OSVersion')]"
@@ -900,7 +900,7 @@
             "value": "[parameters('adminPassword')]"
           },
           "subnetResourceID": {
-            "value": "[variables('backendSubnetID')]"
+            "value": "[variables('pawSubnetID')]"
           },
           "windowsImageSKU": {
             "value": "[variables('OSVersion')]"
