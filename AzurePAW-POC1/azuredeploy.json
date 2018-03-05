@@ -929,7 +929,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('adcsVmDeployment')]"
+        "[variables('adcsVmDeployment')]",
+        "[variables('createADCSTemplatesDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
