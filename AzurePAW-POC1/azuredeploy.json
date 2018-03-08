@@ -116,6 +116,7 @@
     "backendNetworkSubnet": "10.0.1.0/24",
     "frontendNetworkSubnet": "10.0.2.0/24",
     "azurepawNetworkSubnet": "10.0.3.0/24",
+    "gatewayNetworkSubnet": "10.0.4.0/24",
     "primaryDC1IpAddress": "10.0.1.4",
     "primaryDC2IpAddress": "10.0.1.5",
     "primaryADCSIpAddress": "10.0.1.6",
@@ -128,6 +129,7 @@
     "vnetTemplateURL": "[concat(variables('assetLocation'),'/data/vNetDeployment.json')]",
     "nsgTemplateURL": "[concat(variables('assetLocation'),'/data/nsgDeployment.json')]",
     "publicIPTemplateURL": "[concat(variables('assetLocation'),'/data/publicIP.json')]",
+    "psVPNTemplateURL": "[concat(variables('assetLocation'),'/data/deployPointSiteVPN.json')]",
     "dc1TemplateURL": "[concat(variables('assetLocation'),'/data/dc1Vm.json')]",
     "dc2TemplateURL": "[concat(variables('assetLocation'),'/data/dc2Vm.json')]",
     "adcsVMTemplateURL": "[concat(variables('assetLocation'),'/data/adcsVm.json')]",
@@ -192,6 +194,8 @@
     "registerADCSTemplatesDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('registerADCSTemplatesDeployment'))]",
     "aadconnectDeployment": "DownloadInstalAADConnect",
     "aadconnectDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadconnectDeployment'))]",
+    "psVPNDeployment": "DeployPointSiteVPN",
+    "psVPNDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('psVPNDeployment'))]",
 
     "vaultName": "CRSecrets",
     "secretName": "AzurePAWPOC1SAKey2",
@@ -238,6 +242,15 @@
     "frontendSubnetID": "[concat(variables('vnetID'),'/subnets/',variables('frontendSubnetName'))]",
     "pawSubnetName": "[concat('pawSubnet',resourceGroup().name)]",
     "pawSubnetID": "[concat(variables('vnetID'),'/subnets/',variables('pawSubnetName'))]",
+    "gatewaySubnetName": "GatewaySubnet",
+    "gatewaySubnetID": "[concat(variables('vnetID'),'/subnets/',variables('gatewaySubnetName'))]",
+    "gatewayPublicIPName": "[concat('PSVPN-IP',resourceGroup().name)]",
+    "gatewayName": "[concat('PSVPN',resourceGroup().name)]",
+    "gatewaySKU": "Basic",
+    "vpnClientAddressPool": "192.168.100.0/24",
+    "CAName": "Contoso CA",
+    "CAData": "MIICPzCCAaygAwIBAgIQG4WTVfGKqLxMRtKuPFJ4cDAJBgUrDgMCHQUAMC8xLTArBgNVBAMTJFN5ZG5leUF6dXJlQXV0aGVudGljYXRpb25DZXJ0aWZpY2F0ZTAeFw0xMTA2MDkyMzA0NDBaFw0zOTEyMzEyMzU5NTlaMC8xLTArBgNVBAMTJFN5ZG5leUF6dXJlQXV0aGVudGljYXRpb25DZXJ0aWZpY2F0ZTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtPSIGf2+yUDyT8aLB6sZBg2jXKRKfFS+VnM8JX1JxR2bHb5J8vUy8O6WCwcpxqCHpSV2PIXEWNBM2ozGjcaBzMCi53Q+EQvdaGwF7LJHKSL9Iv//uFlkGoKdz6r8yL9HebTH+F6OvIQ8qNxHKtZgRhqB0gMv0dS/qigGmLcDenUCAwEAAaNkMGIwYAYDVR0BBFkwV4AQkVkBKQrptsuAIFPicVM+haExMC8xLTArBgNVBAMTJFN5ZG5leUF6dXJlQXV0aGVudGljYXRpb25DZXJ0aWZpY2F0ZYIQG4WTVfGVqLxMRtKuPFJ4cDAJBgUrDgMCHQUAA4GBAElx6ydJNP8EjIbgppSY39lJKnMWBVqP8u0HXuNc3LkGUTBu0CYNhhR+MM969uX2ykiUkENeGUHykThWJdoAp+yyPWK+/OT9poE5cvNyX5W8ql4vRgeGMew1VQzTHCSx+ZvXtKeSa31Kgf7ZeXQ/3mty1MQUKilCIZPHXqx5GILl",
+
     "subnets": [
       {
         "name": "[variables('backendSubnetName')]",
@@ -264,6 +277,12 @@
           "networkSecurityGroup": {
             "id": "[variables('pawNSGID')]"
           }
+        }
+      },
+      {
+        "name": "[variables('gateWaySubnetName')]",
+        "properties": {
+          "addressPrefix": "[variables('gateWayNetworkSubnet')]"
         }
       }
     ]
@@ -343,6 +362,47 @@
           "lbFE": { "value": "[variables('lbFE')]" },
           "rpdNAT": { "value": "[variables('rpdNAT')]" },
           "rdpPort": { "value": "[variables('rdpPort')]" }
+        }
+      }
+    },
+    {
+      "name": "[variables('psVPNDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('deployVNetId')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('psVPNTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[variables('virtualNetworkName')]"
+          },
+          "gatewaySubnetPrefix": {
+            "value": "[variables('gatewayNetworkSubnet')]"
+          },
+          "gatewayPublicIPName": {
+            "value": "[variables('gatewayPublicIPName')]"
+          },
+          "gatewayName": {
+            "value": "[variables('gatewayName')]"
+          },
+          "gatewaySku": {
+            "value": "[variables('gatewaySKU')]"
+          },
+          "vpnClientAddressPoolPrefix": {
+            "value": "[variables('vpnClientAddressPool')]"
+          },
+          "clientRootCertName": {
+            "value": "[variables('CAName')]"
+          },
+          "clientRootCertData": {
+            "value": "[variables('CAData')]"
+          }
         }
       }
     },

@@ -39,12 +39,14 @@
     <None Include="data\deployADCS.json" />
     <None Include="data\deployADFS.json" />
     <None Include="data\deployADFSProxy.json" />
+    <None Include="data\deployPointSiteVPN.json" />
     <None Include="data\deployPrimaryAD.json" />
     <None Include="data\jumpServerVm.json" />
     <None Include="data\nsgDeployment.json" />
     <None Include="data\PAW1VM.json" />
     <None Include="data\PAW2VM.json" />
     <None Include="data\promoteSecondDC.json" />
+    <None Include="data\psvpn-example.json" />
     <None Include="data\publicIP.json" />
     <None Include="data\registerCertTemplates.json" />
     <None Include="data\vNetDeployment.json" />
