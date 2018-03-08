@@ -40,61 +40,6 @@
       },
       "defaultValue": "127.0.0.1"
     },
-    "deployADCS": {
-      "type": "string",
-      "defaultValue": "No",
-      "allowedValues": [
-        "No",
-        "Yes"
-      ],
-      "metadata": {
-        "description": "It deployes Enterprise Issuing CA with set of certificate templates"
-      }
-    },
-    "deployADFS": {
-      "type": "string",
-      "defaultValue": "No",
-      "allowedValues": [
-        "No",
-        "Yes"
-      ],
-      "metadata": {
-        "description": "It deployes ADFS server in the backend and ADFS Proxy in the DMZ."
-      }
-    },
-    "deployAADConnect": {
-      "type": "string",
-      "defaultValue": "No",
-      "allowedValues": [
-        "No",
-        "Yes"
-      ],
-      "metadata": {
-        "description": "It deployes AAD Connect server"
-      }
-    },
-    "deployAzurePAW1": {
-      "type": "string",
-      "defaultValue": "No",
-      "allowedValues": [
-        "No",
-        "Yes"
-      ],
-      "metadata": {
-        "description": "This VM is joined to ADDS. Deploy this VM if need to test ATA."
-      }
-    },
-    "deployAzurePAW2": {
-      "type": "string",
-      "defaultValue": "No",
-      "allowedValues": [
-        "No",
-        "Yes"
-      ],
-      "metadata": {
-        "description": "This VM is joined to ADDS. Deploy this VM if need to test ATA."
-      }
-    },
     "registerTemplatesviaScript": {
       "type": "string",
       "defaultValue": "No",
@@ -103,7 +48,7 @@
         "Yes"
       ],
       "metadata": {
-        "description": "Register Cert templates via Script. Remove this after DSC is working..."
+        "description": "Do not select. Register Cert templates via Script. Remove this after DSC is working..."
       }
     }
   },
@@ -710,7 +655,6 @@
     },
     {
       "comments": "Deploy ADCS VM",
-      "condition": "[equals(parameters('deployADCS'),'Yes')]",
       "name": "[variables('adcsVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -756,7 +700,6 @@
     },
     {
       "comments": "Deploy Azure AD Connect VM",
-      "condition": "[equals(parameters('deployAADConnect'),'Yes')]",
       "name": "[variables('aadConnectVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -802,7 +745,6 @@
     },
     {
       "comments": "Deploy ADFS VM",
-      "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "name": "[variables('adfsVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -893,7 +835,6 @@
     },
     {
       "comments": "Deploy Azure PAW #1 VM",
-      "condition": "[equals(parameters('deployAzurePAW1'),'Yes')]",
       "name": "[variables('paw1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -939,7 +880,6 @@
     },
     {
       "comments": "Deploy Azure PAW #2 VM",
-      "condition": "[equals(parameters('deployAzurePAW2'),'Yes')]",
       "name": "[variables('paw2VmDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
