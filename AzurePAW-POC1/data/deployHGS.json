@@ -47,6 +47,7 @@
   },
   "variables": {
     "DSDomainDN": "[concat('DC=contoso,DC=com')]",
+    "CACommonName": "[concat('Contoso CA')]",
     "HGSDNSName": "[concat('hgs.contoso.com')]",
     "ModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/DeployHGS.zip')]",
     "ConfigurationFunction": "DeployHGS.ps1\\InstallHGS"
@@ -68,6 +69,7 @@
           "SasToken": "[parameters('storageAccountSASTokenviaKeyvault')]",
           "properties": {
             "domainName": "[parameters('domainName')]",
+            "CACommonName": "[variables('CACommonName')]",
             "HGSDNSName": "[variables('HGSDNSName')]",
             "adminCreds": {
               "userName": "[parameters('adminUserName')]",
