@@ -40,7 +40,7 @@
       },
       "defaultValue": "127.0.0.1"
     },
-    "registerTemplatesviaScript": {
+    "deployADFSFarm": {
       "type": "string",
       "defaultValue": "No",
       "allowedValues": [
@@ -48,7 +48,7 @@
         "Yes"
       ],
       "metadata": {
-        "description": "Do not select. Register Cert templates via Script. Remove this after DSC is working..."
+        "description": "Test ADFS Farm installation on ADFS VM..."
       }
     }
   },
@@ -88,7 +88,7 @@
     "deployDC2AdTemplateURL": "[concat(variables('assetLocation'),'/data/promoteSecondDC.json')]",
     "deployADCSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADCS.json')]",
     "createCertificateTemplatesTemplateURL": "[concat(variables('assetLocation'),'/data/createCertTemplates.json')]",
-    "registerADCSTemplatesTemplateURL": "[concat(variables('assetLocation'),'/data/registerCertTemplates.json')]",
+    "adfsFarmTemplatesTemplateURL": "[concat(variables('assetLocation'),'/data/adfsFarm.json')]",
     "deployAADConnectTemplateURL": "[concat(variables('assetLocation'),'/data/deployAADConnect.json')]",
     "deployADFSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFS.json')]",
     "deployADFSProxyTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFSProxy.json')]",
@@ -135,8 +135,8 @@
     "adcsDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('adcsDeployment'))]",
     "createADCSTemplatesDeployment": "CreateADCSTemplates",
     "createADCSDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('createADCSTemplatesDeployment'))]",
-    "registerADCSTemplatesDeployment": "RegisterADCSTemplates",
-    "registerADCSTemplatesDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('registerADCSTemplatesDeployment'))]",
+    "adfsFarmTemplatesDeployment": "DeployADFSFarm",
+    "adfsFarmTemplatesDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('adfsFarmTemplatesDeployment'))]",
     "aadconnectDeployment": "DownloadInstalAADConnect",
     "aadconnectDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadconnectDeployment'))]",
     "psVPNDeployment": "DeployPointSiteVPN",
@@ -1018,24 +1018,24 @@
       }
     },
     {
-      "comments": "Register Certificate Templates with ADCS",
-      "condition": "[equals(parameters('RegisterTemplatesviaScript'),'Yes')]",
-      "name": "[variables('registerADCSTemplatesDeployment')]",
+      "comments": "Deploy ADFS Farm",
+      "condition": "[equals(parameters('deployADFSFarm'),'Yes')]",
+      "name": "[variables('adfsFarmTemplatesDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('createADCSTemplatesDeployment')]",
-        "[variables('deployDC2AdId')]"
+        "[variables('adfsVmDeployment')]",
+        "[variables('adcsDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('registerADCSTemplatesTemplateURL')]",
+          "uri": "[variables('adfsFarmTemplatesTemplateURL')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "adcsVMName": {
-            "value": "[variables('adcsVMName')]"
+            "value": "[variables('adfsVMName')]"
           },
           "domainName": {
             "value": "[parameters('domainName')]"
