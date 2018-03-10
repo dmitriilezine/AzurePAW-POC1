@@ -71,7 +71,6 @@
             "domainName": "[parameters('domainName')]",
             "CACommonName": "[variables('CACommonName')]",
             "ADFSDNSName": "[variables('ADFSDNSName')]",
-            "DSDomainDN": "[variables('DSDomainDN')]",
             "adminCreds": {
               "userName": "[parameters('adminUserName')]",
               "password": "PrivateSettingsRef:adminPassword"
