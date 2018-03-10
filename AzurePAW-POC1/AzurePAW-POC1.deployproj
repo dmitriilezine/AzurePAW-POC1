@@ -29,7 +29,7 @@
     <Content Include="azuredeploy.parameters.json" />
     <None Include="data\aadConnectVm.json" />
     <None Include="data\adcsVm.json" />
-    <None Include="data\adfsFarm.json" />
+    <None Include="data\adfsfarm.json" />
     <None Include="data\adfsProxyVm.json" />
     <None Include="data\adfsVm.json" />
     <None Include="data\createCertTemplates.json" />

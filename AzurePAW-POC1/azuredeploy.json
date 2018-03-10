@@ -88,7 +88,7 @@
     "deployDC2AdTemplateURL": "[concat(variables('assetLocation'),'/data/promoteSecondDC.json')]",
     "deployADCSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADCS.json')]",
     "createCertificateTemplatesTemplateURL": "[concat(variables('assetLocation'),'/data/createCertTemplates.json')]",
-    "adfsFarmTemplatesTemplateURL": "[concat(variables('assetLocation'),'/data/adfsFarm.json')]",
+    "adfsFarmTemplatesTemplateURL": "[concat(variables('assetLocation'),'/data/adfsfarm.json')]",
     "deployAADConnectTemplateURL": "[concat(variables('assetLocation'),'/data/deployAADConnect.json')]",
     "deployADFSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFS.json')]",
     "deployADFSProxyTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFSProxy.json')]",
