@@ -38,10 +38,10 @@
     <None Include="data\deployAADConnect.json" />
     <None Include="data\deployADCS - Copy.json" />
     <None Include="data\deployADCS.json" />
-    <None Include="data\deployADFS.json" />
-    <None Include="data\deployADFSProxy.json" />
+    <None Include="data\deployHGS.json" />
     <None Include="data\deployPointSiteVPN.json" />
     <None Include="data\deployPrimaryAD.json" />
+    <None Include="data\deployhgsVM.json" />
     <None Include="data\jumpServerVm.json" />
     <None Include="data\nsgDeployment.json" />
     <None Include="data\PAW1VM.json" />

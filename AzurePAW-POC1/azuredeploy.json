@@ -40,7 +40,7 @@
       },
       "defaultValue": "127.0.0.1"
     },
-    "deployADFSFarm": {
+    "deployHGS": {
       "type": "string",
       "defaultValue": "No",
       "allowedValues": [
@@ -48,7 +48,7 @@
         "Yes"
       ],
       "metadata": {
-        "description": "Test ADFS Farm installation on ADFS VM..."
+        "description": "Test HGS installation on HGS VM..."
       }
     }
   },
@@ -67,6 +67,7 @@
     "primaryADCSIpAddress": "10.0.1.6",
     "primaryAADConnectIpAddress": "10.0.1.7",
     "primaryADFSIpAddress": "10.0.1.8",
+    "primaryHGSIpAddress": "10.0.1.9",
     "primaryADFSProxyIpAddress": "10.0.2.5",
     "primaryJumpServerIpAddress": "10.0.2.4",
     "primaryAzurePAW1IpAddress": "10.0.3.4",
@@ -92,6 +93,8 @@
     "deployAADConnectTemplateURL": "[concat(variables('assetLocation'),'/data/deployAADConnect.json')]",
     "deployADFSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFS.json')]",
     "deployADFSProxyTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFSProxy.json')]",
+    "hgsVMTemplateURL": "[concat(variables('assetLocation'),'/data/deployhgsVM.json')]",
+    "deployHGSTemplateURL": "[concat(variables('assetLocation'),'/data/deployHGS.json')]",
     "dc1VMName": "[substring(concat('DC1-',resourceGroup().Name),0,5)]",
     "dc2VMName": "[substring(concat('DC2-',resourceGroup().Name),0,5)]",
     "adcsVMName": "[substring(concat('ADCS',resourceGroup().Name),0,5)]",
@@ -99,6 +102,7 @@
     "jumpVMName": "[substring(concat('JumpBox',resourceGroup().Name),0,7)]",
     "adfsVMName": "[substring(concat('ADFS1',resourceGroup().Name),0,5)]",
     "adfsProxyVMName": "[substring(concat('ADFSProxy',resourceGroup().Name),0,9)]",
+    "hgsVMName": "[substring(concat('HGS',resourceGroup().Name),0,5)]",
     "paw1VMName": "[substring(concat('PAW1',resourceGroup().Name),0,5)]",
     "paw2VMName": "[substring(concat('PAW2',resourceGroup().Name),0,5)]",
     "dnsPrefix": "[tolower(concat(resourceGroup().name,'jump'))]",
@@ -127,6 +131,10 @@
     "adfsVmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('adfsVmDeployment'))]",
     "adfsProxyVmDeployment": "CreateADFSProxyVM",
     "adfsProxyVmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('adfsProxyVmDeployment'))]",
+    "hgsVmDeployment": "CreateHGSVM",
+    "hgsVmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('hgsVmDeployment'))]",
+    "hgsDeployment": "DeployHGSonVM",
+    "hgsDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('hgsDeployment'))]",
     "paw1VMDeployment": "CreatePAW1VM",
     "paw1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('paw1VMDeployment'))]",
     "paw2VMDeployment": "CreatePAW2VM",
@@ -177,6 +185,7 @@
     "jumpNICName": "[concat('JumpBoxNic',resourceGroup().name)]",
     "adfsNICName": "[concat('ADFS-Nic',resourceGroup().name)]",
     "adfsproxyNICName": "[concat('ADFSP-Nic',resourceGroup().name)]",
+    "hgsNICName": "[concat('HGS-Nic',resourceGroup().name)]",
     "paw1NICName": "[concat('PAW1-Nic',resourceGroup().name)]",
     "paw2NICName": "[concat('PAW2-Nic',resourceGroup().name)]",
     "virtualNetworkName": "[concat('ADVNET',resourceGroup().name)]",
@@ -834,6 +843,51 @@
       }
     },
     {
+      "comments": "Deploy HGS VM",
+      "name": "[variables('hgsVmDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('updateVNetDNS1')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('hgsVMTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "subnetResourceID": {
+            "value": "[variables('backendSubnetID')]"
+          },
+          "windowsImageSKU": {
+            "value": "[variables('OSVersion')]"
+          },
+          "vmName": {
+            "value": "[variables('hgsVMName')]"
+          },
+          "vmSize": {
+            "value": "[variables('VMSize')]"
+          },
+          "NicName": {
+            "value": "[variables('hgsNICName')]"
+          },
+          "primaryIpAddress": {
+            "value": "[variables('primaryHGSIpAddress')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          }
+        }
+      }
+    },
+    {
       "comments": "Deploy Azure PAW #1 VM",
       "name": "[variables('paw1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1019,7 +1073,6 @@
     },
     {
       "comments": "Deploy ADFS Farm",
-      "condition": "[equals(parameters('deployADFSFarm'),'Yes')]",
       "name": "[variables('adfsFarmTemplatesDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -1036,6 +1089,57 @@
         "parameters": {
           "adfsVMName": {
             "value": "[variables('adfsVMName')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "assetLocationStorageAccount": {
+            "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "storageAccountKeyviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretName')]"
+            }
+          },
+          "storageAccountSASTokenviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretnameSASurl')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy HGS",
+      "condition": "[equals(parameters('deployHGS'),'Yes')]",
+      "name": "[variables('hgsDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('hgsVmDeployment')]",
+        "[variables('adcsDeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('deployHGSTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMName": {
+            "value": "[variables('hgsVMName')]"
           },
           "domainName": {
             "value": "[parameters('domainName')]"
