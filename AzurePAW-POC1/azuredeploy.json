@@ -1034,7 +1034,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "adcsVMName": {
+          "adfsVMName": {
             "value": "[variables('adfsVMName')]"
           },
           "domainName": {
