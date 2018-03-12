@@ -1042,7 +1042,7 @@
         },
         "parameters": {
           "dc1VMName": {
-            "value": "[variables('dc1VMName')]"
+            "value": "[variables('dc2VMName')]"
           },
           "adcsVMName": {
             "value": "[variables('adcsVMName')]"
@@ -1236,7 +1236,7 @@
         },
         "parameters": {
           "VMName": {
-            "value": "[variables('dc2VMName')]"
+            "value": "[variables('dc1VMName')]"
           },
           "domainName": {
             "value": "[parameters('domainName')]"
