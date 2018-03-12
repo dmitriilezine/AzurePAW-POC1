@@ -1226,7 +1226,8 @@
       "apiVersion": "2015-01-01",
       "dependsOn": [
         "[variables('deployPrimaryAdId')]",
-        "[variables('deployDC2AdId')]"
+        "[variables('deployDC2AdId')]",
+        "[variables('adcsDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
