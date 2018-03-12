@@ -38,6 +38,7 @@
     <None Include="data\deployAADConnect.json" />
     <None Include="data\deployADCS - Copy.json" />
     <None Include="data\deployADCS.json" />
+    <None Include="data\deployDIAD.json" />
     <None Include="data\deployHGS.json" />
     <None Include="data\deployPointSiteVPN.json" />
     <None Include="data\deployPrimaryAD.json" />
