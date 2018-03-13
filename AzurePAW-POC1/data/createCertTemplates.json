@@ -2,7 +2,7 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "dc1VMName": {
+    "vmName": {
       "type": "string",
       "metadata": {
         "description": "The VM name of Primary AD"
@@ -52,7 +52,7 @@
   },
   "resources": [
     {
-      "name": "[concat(parameters('dc1VMName'),'/CreateCertificateTemplates')]",
+      "name": "[concat(parameters('vmName'),'/CreateCertificateTemplates')]",
       "comments": "Create Certificate Templates in ADDS via Script extension",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[resourceGroup().location]",
