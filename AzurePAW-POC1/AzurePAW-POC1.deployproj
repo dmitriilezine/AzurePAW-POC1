@@ -36,6 +36,7 @@
     <None Include="data\dc1Vm.json" />
     <None Include="data\dc2Vm.json" />
     <None Include="data\deployAADConnect.json" />
+    <None Include="data\deployAADProxy.json" />
     <None Include="data\deployADCS - Copy.json" />
     <None Include="data\deployADCS.json" />
     <None Include="data\deployDIAD.json" />
@@ -43,6 +44,9 @@
     <None Include="data\deployPointSiteVPN.json" />
     <None Include="data\deployPrimaryAD.json" />
     <None Include="data\deployhgsVM.json" />
+    <None Include="data\deployRDCB.json" />
+    <None Include="data\deployRDGW.json" />
+    <None Include="data\deployRDSH.json" />
     <None Include="data\jumpServerVm.json" />
     <None Include="data\nsgDeployment.json" />
     <None Include="data\PAW1VM.json" />
@@ -50,6 +54,7 @@
     <None Include="data\promoteSecondDC.json" />
     <None Include="data\psvpn-example.json" />
     <None Include="data\publicIP.json" />
+    <None Include="data\rdssample.json" />
     <None Include="data\registerCertTemplates.json" />
     <None Include="data\vNetDeployment.json" />
     <None Include="data\vnetDNSupdate.json" />

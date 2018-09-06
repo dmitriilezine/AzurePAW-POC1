@@ -88,6 +88,12 @@
         "description": "The Version of Windows Image"
       },
       "defaultValue": "latest"
+    },
+    "availabilitySetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Availability set for VMs"
+      }
     }
   },
   "variables": {

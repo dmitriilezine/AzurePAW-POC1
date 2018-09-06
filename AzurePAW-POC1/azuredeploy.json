@@ -46,6 +46,7 @@
     "assetLocationStorageAccount": "https://azurepaw.blob.core.windows.net",
     "VMSize": "Standard_A2",
     "OSVersion": "2016-Datacenter",
+    "numberOfRdshInstances": "2",
     "virtualNetworkAddressRange": "10.0.0.0/16",
     "backendNetworkSubnet": "10.0.1.0/24",
     "frontendNetworkSubnet": "10.0.2.0/24",
@@ -61,6 +62,10 @@
     "primaryJumpServerIpAddress": "10.0.2.4",
     "primaryAzurePAW1IpAddress": "10.0.3.4",
     "primaryAzurePAW2IpAddress": "10.0.3.5",
+    "primaryCB1IpAddress": "10.0.3.6",
+    "primaryGW1IpAddress": "10.0.3.7",
+    "primaryAADProxy1IpAddress": "10.0.3.8",
+
     "vnetTemplateURL": "[concat(variables('assetLocation'),'/data/vNetDeployment.json')]",
     "nsgTemplateURL": "[concat(variables('assetLocation'),'/data/nsgDeployment.json')]",
     "publicIPTemplateURL": "[concat(variables('assetLocation'),'/data/publicIP.json')]",
@@ -74,6 +79,8 @@
     "jumpServerTemplateURL": "[concat(variables('assetLocation'),'/data/jumpServerVm.json')]",
     "AzurePAW1VMTemplateURL": "[concat(variables('assetLocation'),'/data/PAW1VM.json')]",
     "AzurePAW2VMTemplateURL": "[concat(variables('assetLocation'),'/data/PAW2VM.json')]",
+    "hgsVMTemplateURL": "[concat(variables('assetLocation'),'/data/deployhgsVM.json')]",
+
     "deployPrimaryAdTemplateURL": "[concat(variables('assetLocation'),'/data/deployPrimaryAD.json')]",
     "deployDC2AdTemplateURL": "[concat(variables('assetLocation'),'/data/promoteSecondDC.json')]",
     "deployADCSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADCS.json')]",
@@ -82,9 +89,13 @@
     "deployAADConnectTemplateURL": "[concat(variables('assetLocation'),'/data/deployAADConnect.json')]",
     "deployADFSTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFS.json')]",
     "deployADFSProxyTemplateURL": "[concat(variables('assetLocation'),'/data/deployADFSProxy.json')]",
-    "hgsVMTemplateURL": "[concat(variables('assetLocation'),'/data/deployhgsVM.json')]",
     "deployHGSTemplateURL": "[concat(variables('assetLocation'),'/data/deployHGS.json')]",
     "deployDIADTemplateURL": "[concat(variables('assetLocation'),'/data/deployDIAD.json')]",
+    "deployRDCBTemplateURL": "[concat(variables('assetLocation'),'/data/deployRDCB.json')]",
+    "deployRDGWTemplateURL": "[concat(variables('assetLocation'),'/data/deployRDGW.json')]",
+    "deployRDSHTemplateURL": "[concat(variables('assetLocation'),'/data/deployRDSH.json')]",
+    "deployAADProxyTemplateURL": "[concat(variables('assetLocation'),'/data/deployAADProxy.json')]",
+
     "dc1VMName": "[substring(concat('DC1-',resourceGroup().Name),0,5)]",
     "dc2VMName": "[substring(concat('DC2-',resourceGroup().Name),0,5)]",
     "adcsVMName": "[substring(concat('ADCS',resourceGroup().Name),0,5)]",
@@ -95,7 +106,12 @@
     "hgsVMName": "[substring(concat('HGS',resourceGroup().Name),0,5)]",
     "paw1VMName": "[substring(concat('PAW1',resourceGroup().Name),0,5)]",
     "paw2VMName": "[substring(concat('PAW2',resourceGroup().Name),0,5)]",
+    "cb1VMName": "[substring(concat('CB1',resourceGroup().Name),0,5)]",
+    "gw1VMName": "[substring(concat('GW1',resourceGroup().Name),0,5)]",
+    "aadProxy1VMName": "[substring(concat('AADProxy1',resourceGroup().Name),0,5)]",
+
     "dnsPrefix": "[tolower(concat(resourceGroup().name,'jump'))]",
+
     "dc1VmDeployment": "CreateADDC1VM",
     "dc1VmDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('dc1VmDeployment'))]",
     "dc2VmDeployment": "CreateADDC2VM",
@@ -141,6 +157,20 @@
     "psVPNDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('psVPNDeployment'))]",
     "DIADouGPODeployment": "DeployDIAD-OUs-GPOs",
     "DIADouGPODeploymentId": "[concat('Microsoft.Resources/deployments/', variables('DIADouGPODeployment'))]",
+    "cb1VMDeployment": "CreateCB1VM",
+    "cb1VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('cb1VMDeployment'))]",
+    "gw1VMDeployment": "CreateGW1VM",
+    "gw1VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('gw1VMDeployment'))]",
+    "aadProxy1VMDeployment": "CreateAADProxy1VM",
+    "aadProxy1VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadProxy1VMDeployment'))]",
+    "cb1Deployment": "DeployRDCB-RDLS",
+    "cb1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('cb1Deployment'))]",
+    "gw1Deployment": "DeployRDGW-RDWeb",
+    "gw1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('gw1Deployment'))]",
+    "rdshDeployment": "DeployRDSH",
+    "rdshDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('rdshDeployment'))]",
+    "aadProxy1Deployment": "DeployAADProxy",
+    "aadProxy1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadProxy1Deployment'))]",
 
     "vaultName": "CRSecrets",
     "secretName": "AzurePAWPOC1SAKey2",
@@ -149,6 +179,11 @@
     "KeyVaultRG": "/resourceGroups/Storage",
     "keyVaultID": "[concat('/subscriptions/', parameters('subscriptionID'), variables('KeyVaultRG'), '/providers/Microsoft.KeyVault/vaults/', variables('vaultName'))]",
     "adAvailabilitySetName": "addsAvailabiltySet",
+    "cbAvailabilitySetName": "cbAvailabiltySet",
+    "gwAvailabilitySetName": "gwAvailabiltySet",
+    "rdshAvailabilitySetName": "rdshAvailabiltySet",
+    "aadProxyAvailabilitySetName": "aadProxyAvailabiltySet",
+
     "imageOffer": "WindowsServer",
     "imagePublisher": "MicrosoftWindowsServer",
 
@@ -170,6 +205,7 @@
     "feNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('feNSGName'))]",
     "pawNSGName": "[concat('PAW-NSG',resourceGroup().name)]",
     "pawNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('pawNSGName'))]",
+
     "dc1NICName": "[concat('DC1-Nic',resourceGroup().name)]",
     "dc2NICName": "[concat('DC2-Nic',resourceGroup().name)]",
     "adcsNICName": "[concat('ADCS-Nic',resourceGroup().name)]",
@@ -180,6 +216,10 @@
     "hgsNICName": "[concat('HGS-Nic',resourceGroup().name)]",
     "paw1NICName": "[concat('PAW1-Nic',resourceGroup().name)]",
     "paw2NICName": "[concat('PAW2-Nic',resourceGroup().name)]",
+    "cb1NICName": "[concat('CB1-Nic',resourceGroup().name)]",
+    "gw1NICName": "[concat('GW1-Nic',resourceGroup().name)]",
+    "aadProxy1NICName": "[concat('AADProxy1-Nic',resourceGroup().name)]",
+
     "virtualNetworkName": "[concat('ADVNET',resourceGroup().name)]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
     "backendSubnetName": "[concat('BackEndSubnet',resourceGroup().name)]",
@@ -236,6 +276,58 @@
   "resources": [
     {
       "name": "[variables('adAvailabilitySetName')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "PlatformUpdateDomainCount": 3,
+        "PlatformFaultDomainCount": 2
+      },
+      "sku": {
+        "name": "Aligned"
+      }
+    },
+    {
+      "name": "[variables('cbAvailabilitySetName')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "PlatformUpdateDomainCount": 3,
+        "PlatformFaultDomainCount": 2
+      },
+      "sku": {
+        "name": "Aligned"
+      }
+    },
+    {
+      "name": "[variables('gwAvailabilitySetName')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "PlatformUpdateDomainCount": 3,
+        "PlatformFaultDomainCount": 2
+      },
+      "sku": {
+        "name": "Aligned"
+      }
+    },
+    {
+      "name": "[variables('rdshAvailabilitySetName')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "PlatformUpdateDomainCount": 20,
+        "PlatformFaultDomainCount": 2
+      },
+      "sku": {
+        "name": "Aligned"
+      }
+    },
+    {
+      "name": "[variables('aadProxyAvailabilitySetName')]",
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2017-03-30",
       "location": "[resourceGroup().location]",
@@ -925,6 +1017,9 @@
           },
           "domainName": {
             "value": "[parameters('domainName')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('rdshAvailabilitySetName')]"
           }
         }
       }
@@ -971,6 +1066,156 @@
           },
           "domainName": {
             "value": "[parameters('domainName')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('rdshAvailabilitySetName')]"
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy RD CB and LS VM #1",
+      "name": "[variables('cb1VMDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('AzurePAW1VMTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "subnetResourceID": {
+            "value": "[variables('pawSubnetID')]"
+          },
+          "windowsImageSKU": {
+            "value": "[variables('OSVersion')]"
+          },
+          "vmName": {
+            "value": "[variables('cb1VMName')]"
+          },
+          "vmSize": {
+            "value": "[variables('VMSize')]"
+          },
+          "NicName": {
+            "value": "[variables('cb1NICName')]"
+          },
+          "primaryIpAddress": {
+            "value": "[variables('primaryCB1IpAddress')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('cbAvailabilitySetName')]"
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy RD GW and Web VM #1",
+      "name": "[variables('gw1VMDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('AzurePAW1VMTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "subnetResourceID": {
+            "value": "[variables('pawSubnetID')]"
+          },
+          "windowsImageSKU": {
+            "value": "[variables('OSVersion')]"
+          },
+          "vmName": {
+            "value": "[variables('gw1VMName')]"
+          },
+          "vmSize": {
+            "value": "[variables('VMSize')]"
+          },
+          "NicName": {
+            "value": "[variables('gw1NICName')]"
+          },
+          "primaryIpAddress": {
+            "value": "[variables('primaryGW1IpAddress')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('gwAvailabilitySetName')]"
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy AAD Proxy VM #1",
+      "name": "[variables('aadProxy1VMDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('AzurePAW1VMTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "subnetResourceID": {
+            "value": "[variables('pawSubnetID')]"
+          },
+          "windowsImageSKU": {
+            "value": "[variables('OSVersion')]"
+          },
+          "vmName": {
+            "value": "[variables('aadProxy1VMName')]"
+          },
+          "vmSize": {
+            "value": "[variables('VMSize')]"
+          },
+          "NicName": {
+            "value": "[variables('aadProxy1NICName')]"
+          },
+          "primaryIpAddress": {
+            "value": "[variables('primaryAADProxy1IpAddress')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('aadProxyAvailabilitySetName')]"
           }
         }
       }
@@ -1224,7 +1469,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-       "[variables('adcsDeployment')]"
+        "[variables('adcsDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1254,6 +1499,208 @@
                 "id": "[variables('keyVaultID')]"
               },
               "secretName": "[variables('secretName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy RDCB and RDLS on CB VM",
+      "name": "[variables('cb1Deployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('cb1VMDeployment')]",
+        "[variables('gw1Deployment')]",
+        "[variables('rdshDeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('deployRDCBTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMName": {
+            "value": "[variables('cb1VMName')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "numberOfRdshInstances": {
+            "value": "[variables('numberOfRdshInstances')]"
+          },
+          "assetLocationStorageAccount": {
+            "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "storageAccountKeyviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretName')]"
+            }
+          },
+          "storageAccountSASTokenviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretnameSASurl')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy RDGW and RDWeb on GW VM",
+      "name": "[variables('gw1Deployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('gw1VMDeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('deployRDGWTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMName": {
+            "value": "[variables('gw1VMName')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "assetLocationStorageAccount": {
+            "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "storageAccountKeyviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretName')]"
+            }
+          },
+          "storageAccountSASTokenviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretnameSASurl')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy RDSH",
+      "name": "[variables('rdshDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('paw1VMDeployment')]",
+        "[variables('paw2VMDeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('deployRDSHTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMName": {
+            "value": "[variables('paw1VMName')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "assetLocationStorageAccount": {
+            "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "storageAccountKeyviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretName')]"
+            }
+          },
+          "storageAccountSASTokenviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretnameSASurl')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy AAD Proxy on VM",
+      "name": "[variables('aadProxy1Deployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('aadProxy1VMDeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('deployAADProxyTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMName": {
+            "value": "[variables('aadProxy1VMName')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "assetLocationStorageAccount": {
+            "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "storageAccountKeyviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretName')]"
+            }
+          },
+          "storageAccountSASTokenviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretnameSASurl')]"
             }
           }
         }

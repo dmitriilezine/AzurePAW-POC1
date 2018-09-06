@@ -75,7 +75,7 @@
     "windowsImageSKU": {
       "type": "string",
       "allowedValues": [
-       "2016-Datacenter"
+        "2016-Datacenter"
       ],
       "metadata": {
         "description": "The SKU Name of Windows Image"
@@ -88,6 +88,12 @@
         "description": "The Version of Windows Image"
       },
       "defaultValue": "latest"
+    },
+    "availabilitySetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Availability set for VMs"
+      }
     }
   },
   "variables": {
