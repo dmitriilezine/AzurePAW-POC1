@@ -39,6 +39,14 @@
         "description": "Internet IP of the computer that will RDP into this lab. Change this to * to allow all Internet devices to brute force your lab or find out external IP or subnet for your device to lock down access to your lab from the Internet. Choice is yours."
       },
       "defaultValue": "127.0.0.1"
+    },
+    "numberOfRdshInstances": {
+      "type": "int",
+      "defaultValue": 2,
+      "allowedValues": [ 2 ],
+      "metadata": {
+        "description": "Number of RemoteDesktopSessionHosts"
+      }
     }
   },
   "variables": {
@@ -1534,7 +1542,7 @@
             "value": "[parameters('adminPassword')]"
           },
           "numberOfRdshInstances": {
-            "value": "[variables('numberOfRdshInstances')]"
+            "value": "[parameters('numberOfRdshInstances')]"
           },
           "assetLocationStorageAccount": {
             "value": "[variables('assetLocationStorageAccount')]"
