@@ -73,7 +73,7 @@
           ]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('powershell -NoLogo -NoProfile -ExecutionPolicy Unrestricted -File PlaceHolder.ps1]",
+          "commandToExecute": "[concat('powershell -NoLogo -NoProfile -ExecutionPolicy Unrestricted -File PlaceHolder.ps1')]",
           "storageAccountName": "azurepaw",
           "storageAccountKey": "[parameters('storageAccountKeyviaKeyvault')]"
         }
