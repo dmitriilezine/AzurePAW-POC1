@@ -56,7 +56,7 @@
   "variables": {
     "ModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/RDSConfiguration.zip')]",
     "ConfigurationFunction": "RDSConfiguration.ps1\\RDSDeployment",
-    "gatewayIpRef": "gatewaypublicIp",
+    "gatewayIpRef": "[concat('rds.contoso.com')]",
     "DNSName": "[concat('rds.contoso.com')]",
     "CACommonName": "[concat('Contoso CA')]"
   },
@@ -82,7 +82,7 @@
             },
             "connectionBroker": "[concat('broker.',parameters('domainName'))]",
             "domainName": "[parameters('domainName')]",
-            "externalfqdn": "[reference(variables('gatewayIpRef')).dnsSettings.fqdn]",
+            "externalfqdn": "[variables('gatewayIpRef')]",
             "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
             "sessionHostNamingPrefix": "rdsh-",
             "webAccessServer": "[concat('gateway.',parameters('domainName'))]",
