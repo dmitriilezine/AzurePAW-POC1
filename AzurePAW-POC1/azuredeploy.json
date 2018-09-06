@@ -46,7 +46,7 @@
     "assetLocationStorageAccount": "https://azurepaw.blob.core.windows.net",
     "VMSize": "Standard_A2",
     "OSVersion": "2016-Datacenter",
-    "numberOfRdshInstances": "1",
+    "numberOfRdshInstances": "2",
     "virtualNetworkAddressRange": "10.0.0.0/16",
     "backendNetworkSubnet": "10.0.1.0/24",
     "frontendNetworkSubnet": "10.0.2.0/24",
