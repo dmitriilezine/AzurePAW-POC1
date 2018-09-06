@@ -37,6 +37,12 @@
       "metadata": {
         "description": "Key for the Storage account"
       }
+    },
+    "storageAccountSASTokenviaKeyvault": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Key for the Storage account"
+      }
     }
   },
   "variables": {
