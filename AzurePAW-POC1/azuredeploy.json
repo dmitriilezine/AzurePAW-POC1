@@ -47,6 +47,20 @@
       "metadata": {
         "description": "Number of RemoteDesktopSessionHosts"
       }
+    },
+    "vaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Key Vault where secrets are stored"
+      },
+      "defaultValue": "CRSecrets"
+    },
+    "KeyVaultRG": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Key Vault where secrets are stored"
+      },
+      "defaultValue": "Storage"
     }
   },
   "variables": {
@@ -180,12 +194,14 @@
     "aadProxy1Deployment": "DeployAADProxy",
     "aadProxy1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadProxy1Deployment'))]",
 
-    "vaultName": "CRSecrets",
+    "vaultName1": "CRSecrets",
+    "vaultName": "[concat(parameters('vaultName')]",
     "secretName": "AzurePAWPOC1SAKey2",
     "secretnameSASurl": "AzurePAWPOC1SAS",
+    "KeyVaultRG1": "Storage",
+    "KeyVaultRG": "[concat(parameters('KeyVaultRG')]",
+    "keyVaultID": "[concat('/subscriptions/', parameters('subscriptionID'), '/resourceGroups/', variables('KeyVaultRG'), '/providers/Microsoft.KeyVault/vaults/', variables('vaultName'))]",
 
-    "KeyVaultRG": "/resourceGroups/Storage",
-    "keyVaultID": "[concat('/subscriptions/', parameters('subscriptionID'), variables('KeyVaultRG'), '/providers/Microsoft.KeyVault/vaults/', variables('vaultName'))]",
     "adAvailabilitySetName": "addsAvailabiltySet",
     "cbAvailabilitySetName": "cbAvailabiltySet",
     "gwAvailabilitySetName": "gwAvailabiltySet",
