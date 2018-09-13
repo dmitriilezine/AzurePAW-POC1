@@ -195,11 +195,11 @@
     "aadProxy1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadProxy1Deployment'))]",
 
     "vaultName1": "CRSecrets",
-    "vaultName": "[concat(parameters('vaultName')]",
+    "vaultName": "[parameters('vaultName')]",
     "secretName": "AzurePAWPOC1SAKey2",
     "secretnameSASurl": "AzurePAWPOC1SAS",
     "KeyVaultRG1": "Storage",
-    "KeyVaultRG": "[concat(parameters('KeyVaultRG')]",
+    "KeyVaultRG": "[parameters('KeyVaultRG')]",
     "keyVaultID": "[concat('/subscriptions/', parameters('subscriptionID'), '/resourceGroups/', variables('KeyVaultRG'), '/providers/Microsoft.KeyVault/vaults/', variables('vaultName'))]",
 
     "adAvailabilitySetName": "addsAvailabiltySet",
