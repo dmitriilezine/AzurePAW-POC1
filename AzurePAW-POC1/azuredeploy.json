@@ -11,11 +11,8 @@
     },
     "domainName": {
       "type": "string",
-      "allowedValues": [
-        "contoso.com"
-      ],
       "metadata": {
-        "description": "Currently hardcoded to contoso.com. The domain name needs to be consisting of one or more labels separated by . E.g. contoso.com"
+        "description": "Current deployment supports top level domain name only, for example contoso.com, fabrikam.com etc"
       },
       "defaultValue": "contoso.com"
     },
@@ -194,11 +191,9 @@
     "aadProxy1Deployment": "DeployAADProxy",
     "aadProxy1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadProxy1Deployment'))]",
 
-    "vaultName1": "CRSecrets",
     "vaultName": "[parameters('vaultName')]",
     "secretName": "AzurePAWPOC1SAKey2",
     "secretnameSASurl": "AzurePAWPOC1SAS",
-    "KeyVaultRG1": "Storage",
     "KeyVaultRG": "[parameters('KeyVaultRG')]",
     "keyVaultID": "[concat('/subscriptions/', parameters('subscriptionID'), '/resourceGroups/', variables('KeyVaultRG'), '/providers/Microsoft.KeyVault/vaults/', variables('vaultName'))]",
 

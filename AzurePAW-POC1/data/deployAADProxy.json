@@ -49,9 +49,11 @@
     "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/PlaceHolder.ps1')]",
     "psScriptZipPackageURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ScriptName.zip')]",
     "psScriptEXEURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/AADApplicationProxyConnectorInstaller.exe')]",
-    "ouold": "[concat('CN=Users,DC=contoso,DC=com')]",
-    "ou": "[concat('DC=contoso,DC=com')]",
-    "upn": "[concat('contoso.com')]"
+    "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
+    "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
+    "upn": "[concat(parameters('domainName'))]",
+    "ouPath": "[concat('DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]"
+
 
   },
   "resources": [

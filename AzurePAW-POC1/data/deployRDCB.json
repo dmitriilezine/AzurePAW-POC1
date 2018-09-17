@@ -56,9 +56,11 @@
   "variables": {
     "ModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/RDSConfiguration.zip')]",
     "ConfigurationFunction": "RDSConfiguration.ps1\\RDSDeployment",
-    "gatewayIpRef": "[concat('rds.contoso.com')]",
-    "DNSName": "[concat('rds.contoso.com')]",
-    "CACommonName": "[concat('Contoso CA')]"
+    "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
+    "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
+    "CACommonName": "[concat(variables('shortDomainName'),' CA')]",
+    "DNSName": "[concat('rds.',parameters('domainName'))]",
+    "gatewayIpRef": "[concat('rds.',parameters('domainName'))]"
   },
   "resources": [
     {

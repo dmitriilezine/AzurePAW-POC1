@@ -42,9 +42,13 @@
   "variables": {
     "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ExtendAD-DIAD.ps1')]",
     "psDIADScriptZipPackageURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ExportImportAD.zip')]",
-    "ouold": "[concat('CN=Users,DC=contoso,DC=com')]",
-    "ou": "[concat('DC=contoso,DC=com')]",
-    "upn": "[concat('contoso.com')]"
+    "ouoldold": "[concat('CN=Users,DC=contoso,DC=com')]",
+    "ouOLD": "[concat('DC=contoso,DC=com')]",
+    "upnOLD": "[concat('contoso.com')]",
+    "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
+    "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
+    "ou": "[concat('DC=',variables('shortDomainName'),',DC=',variables('domainSuffix'))]",
+    "upn": "[concat(parameters('domainName'))]"
 
   },
   "resources": [

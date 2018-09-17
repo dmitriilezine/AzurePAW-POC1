@@ -46,8 +46,12 @@
     }
   },
   "variables": {
-    "DSDomainDN": "[concat('DC=contoso,DC=com')]",
-    "CACommonName": "[concat('Contoso CA')]",
+    "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
+    "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
+    "DSDomainDNOLD": "[concat('DC=contoso,DC=com')]",
+    "DSDomainDN": "[concat('DC=',variables('shortDomainName'),',DC=',variables('domainSuffix'))]",
+
+    "CACommonName": "[concat(variables('shortDomainName'),' CA')]",
     "caModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/DeployADCS.zip')]",
     "caConfigurationFunction": "InstallCA.ps1\\InstallADCS"
   },
