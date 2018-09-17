@@ -48,15 +48,13 @@
       "type": "string",
       "metadata": {
         "description": "The name of the Key Vault where secrets are stored"
-      },
-      "defaultValue": "CRSecrets"
+      }
     },
     "KeyVaultRG": {
       "type": "string",
       "metadata": {
         "description": "The name of the RG where Key Vault is stored"
-      },
-      "defaultValue": "Storage"
+      }
     }
   },
   "variables": {
