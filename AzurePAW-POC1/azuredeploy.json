@@ -13,8 +13,7 @@
       "type": "string",
       "metadata": {
         "description": "Current deployment supports top level domain name only, for example contoso.com, fabrikam.com etc"
-      },
-      "defaultValue": "contoso.com"
+      }
     },
     "adminUsername": {
       "type": "string",
@@ -55,7 +54,7 @@
     "KeyVaultRG": {
       "type": "string",
       "metadata": {
-        "description": "The name of the Key Vault where secrets are stored"
+        "description": "The name of the RG where Key Vault is stored"
       },
       "defaultValue": "Storage"
     }
