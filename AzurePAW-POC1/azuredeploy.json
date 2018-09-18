@@ -138,7 +138,7 @@
     "deployNSGsId": "[concat('Microsoft.Resources/deployments/', variables('deployNSGs'))]",
     "deployPrimaryAd": "ConfigureAD",
     "deployPrimaryAdId": "[concat('Microsoft.Resources/deployments/', variables('deployPrimaryAd'))]",
-    "deployDC2Ad": "ConfigureADDC2",
+    "deployDC2Ad": "PromoteDC2toAD",
     "deployDC2AdId": "[concat('Microsoft.Resources/deployments/', variables('deployDC2Ad'))]",
     "updateVNetDNS1": "UpdateVNetDNS",
     "updateVNetDNS2": "UpdateVNetDNS2",

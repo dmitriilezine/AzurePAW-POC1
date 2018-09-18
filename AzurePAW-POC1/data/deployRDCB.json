@@ -85,7 +85,6 @@
               "userName": "[parameters('adminUserName')]",
               "password": "PrivateSettingsRef:adminPassword"
             },
-            "connectionBroker": "[variables('connectionBroker')]",
             "domainName": "[parameters('domainName')]",
             "externalfqdn": "[variables('gatewayIpRef')]",
             "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
