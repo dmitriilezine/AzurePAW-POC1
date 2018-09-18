@@ -1652,10 +1652,6 @@
       "name": "[variables('rdshDeploymentOnPAW1')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
-      "copy": {
-        "name": "rdsh-vm-loop",
-        "count": "[parameters('numberOfRdshInstances')]"
-      },
       "dependsOn": [
         "[variables('paw1VMDeployment')]",
         "[variables('paw2VMDeployment')]",
@@ -1707,10 +1703,6 @@
       "name": "[variables('rdshDeploymentOnPAW2')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
-      "copy": {
-        "name": "rdsh-vm-loop",
-        "count": "[parameters('numberOfRdshInstances')]"
-      },
       "dependsOn": [
         "[variables('paw1VMDeployment')]",
         "[variables('paw2VMDeployment')]",
