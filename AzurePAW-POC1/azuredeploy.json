@@ -188,6 +188,11 @@
     "aadProxy1Deployment": "DeployAADProxy",
     "aadProxy1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadProxy1Deployment'))]",
 
+    "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
+    "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
+    "ouPathT0Devices": "[concat('OU=T0-Devices; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
+    "ouPathNone": "",
+
     "vaultName": "[parameters('vaultName')]",
     "secretName": "AzurePAWPOC1SAKey2",
     "secretnameSASurl": "AzurePAWPOC1SAS",
@@ -997,8 +1002,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]",
-        "[variables('DIADouGPODeployment')]"
+        "[variables('updateVNetDNS1')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1036,6 +1040,9 @@
           },
           "availabilitySetName": {
             "value": "[variables('rdshAvailabilitySetName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathNone')]"
           }
         }
       }
@@ -1046,13 +1053,12 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]",
-        "[variables('DIADouGPODeployment')]"
+        "[variables('updateVNetDNS1')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('AzurePAW2VMTemplateURL')]",
+          "uri": "[variables('AzurePAW1VMTemplateURL')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -1085,6 +1091,9 @@
           },
           "availabilitySetName": {
             "value": "[variables('rdshAvailabilitySetName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathNone')]"
           }
         }
       }
@@ -1134,6 +1143,9 @@
           },
           "availabilitySetName": {
             "value": "[variables('cbAvailabilitySetName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathT0Devices')]"
           }
         }
       }
@@ -1144,8 +1156,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]",
-        "[variables('DIADouGPODeployment')]"
+        "[variables('updateVNetDNS1')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1183,6 +1194,9 @@
           },
           "availabilitySetName": {
             "value": "[variables('gwAvailabilitySetName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathNone')]"
           }
         }
       }
@@ -1232,6 +1246,9 @@
           },
           "availabilitySetName": {
             "value": "[variables('aadProxyAvailabilitySetName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathT0Devices')]"
           }
         }
       }
@@ -1485,7 +1502,10 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('adcsDeployment')]"
+        "[variables('adcsDeployment')]",
+        "[variables('gw1VMDeployment')]",
+        "[variables('paw1VMDeployment')]",
+        "[variables('paw2VMDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1580,7 +1600,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('gw1VMDeployment')]"
+        "[variables('gw1VMDeployment')]",
+        "[variables('adcsDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1630,7 +1651,8 @@
       "apiVersion": "2015-01-01",
       "dependsOn": [
         "[variables('paw1VMDeployment')]",
-        "[variables('paw2VMDeployment')]"
+        "[variables('paw2VMDeployment')]",
+        "[variables('adcsDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",

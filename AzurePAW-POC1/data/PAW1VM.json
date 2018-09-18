@@ -94,6 +94,12 @@
       "metadata": {
         "description": "Availability set for VMs"
       }
+    },
+    "ouPath": {
+      "type": "string",
+      "metadata": {
+        "description": "Availability set for VMs"
+      }
     }
   },
   "variables": {
@@ -101,8 +107,8 @@
     "domainJoinOptions": "3",
     "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
     "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
-    "ouPath": "[concat('OU=T0-Devices; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
-    "ouPathOLD": "OU=T0-Devices; OU=Tier 0; OU=Admin; DC=contoso; DC=com",
+    "ouPathOLD": "[concat('OU=T0-Devices; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
+    "ouPathOLDOLD": "OU=T0-Devices; OU=Tier 0; OU=Admin; DC=contoso; DC=com",
     "joinUser": "[concat(variables('shortDomainName'), '\\', parameters('adminUsername'))]",
     "joinUserDN": "[concat(parameters('domainName'), '\\', parameters('adminUsername'))]",
     "joinuserUPN": "[concat(parameters('adminUsername'),'@',parameters('domainName'))]",
@@ -214,7 +220,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "Name": "[parameters('domainName')]",
-          "OUPath": "[variables('ouPath')]",
+          "OUPath": "[parameters('ouPath')]",
           "User": "[variables('joinUserDN')]",
           "Restart": "true",
           "Options": "[variables('domainJoinOptions')]"
