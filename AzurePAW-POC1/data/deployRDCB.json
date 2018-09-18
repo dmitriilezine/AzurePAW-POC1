@@ -86,7 +86,7 @@
             "domainName": "[parameters('domainName')]",
             "externalfqdn": "[variables('gatewayIpRef')]",
             "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
-            "sessionHostNamingPrefix": "rdsh-",
+            "sessionHostNamingPrefix": "PAW-",
             "webAccessServer": "[concat('gateway.',parameters('domainName'))]",
             "CACommonName": "[variables('CACommonName')]",
             "DNSName": "[variables('DNSName')]"

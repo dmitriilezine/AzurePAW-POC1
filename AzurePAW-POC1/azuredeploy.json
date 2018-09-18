@@ -114,16 +114,16 @@
 
     "dc1VMName": "[substring(concat('DC1-',resourceGroup().Name),0,5)]",
     "dc2VMName": "[substring(concat('DC2-',resourceGroup().Name),0,5)]",
-    "adcsVMName": "[substring(concat('ADCS',resourceGroup().Name),0,5)]",
+    "adcsVMName": "[substring(concat('CA1-',resourceGroup().Name),0,5)]",
     "aadConnectVMName": "[substring(concat('AADC1',resourceGroup().Name),0,5)]",
     "jumpVMName": "[substring(concat('JumpBox',resourceGroup().Name),0,7)]",
     "adfsVMName": "[substring(concat('ADFS1',resourceGroup().Name),0,5)]",
     "adfsProxyVMName": "[substring(concat('ADFSProxy',resourceGroup().Name),0,9)]",
-    "hgsVMName": "[substring(concat('HGS',resourceGroup().Name),0,5)]",
-    "paw1VMName": "[substring(concat('PAW1',resourceGroup().Name),0,5)]",
-    "paw2VMName": "[substring(concat('PAW2',resourceGroup().Name),0,5)]",
-    "cb1VMName": "[substring(concat('CB1',resourceGroup().Name),0,5)]",
-    "gw1VMName": "[substring(concat('GW1',resourceGroup().Name),0,5)]",
+    "hgsVMName": "[substring(concat('HGS-',resourceGroup().Name),0,5)]",
+    "paw1VMName": "[substring(concat('PAW-1',resourceGroup().Name),0,5)]",
+    "paw2VMName": "[substring(concat('PAW-2',resourceGroup().Name),0,5)]",
+    "cb1VMName": "[substring(concat('CB1-',resourceGroup().Name),0,5)]",
+    "gw1VMName": "[substring(concat('GW1-',resourceGroup().Name),0,5)]",
     "aadProxy1VMName": "[substring(concat('AADProxy1',resourceGroup().Name),0,5)]",
 
     "dnsPrefix": "[tolower(concat(resourceGroup().name,'jump'))]",
@@ -183,8 +183,10 @@
     "cb1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('cb1Deployment'))]",
     "gw1Deployment": "DeployRDGW-RDWeb",
     "gw1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('gw1Deployment'))]",
-    "rdshDeployment": "DeployRDSH",
-    "rdshDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('rdshDeployment'))]",
+    "rdshDeploymentOnPAW1": "DeployRDSHonPAW1",
+    "rdshDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('rdshDeploymentOnPAW1'))]",
+    "rdshDeploymentOnPAW2": "DeployRDSHonPAW2",
+    "rdshDeploymentPAW2Id": "[concat('Microsoft.Resources/deployments/', variables('rdshDeploymentOnPAW2'))]",
     "aadProxy1Deployment": "DeployAADProxy",
     "aadProxy1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadProxy1Deployment'))]",
 
@@ -1548,7 +1550,8 @@
       "dependsOn": [
         "[variables('cb1VMDeployment')]",
         "[variables('gw1Deployment')]",
-        "[variables('rdshDeployment')]"
+        "[variables('rdshDeploymentOnPAW1')]",
+        "[variables('rdshDeploymentOnPAW2')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1645,10 +1648,14 @@
       }
     },
     {
-      "comments": "Deploy RDSH",
-      "name": "[variables('rdshDeployment')]",
+      "comments": "Deploy RDSH on PAW1 - this needs to be changed to loop",
+      "name": "[variables('rdshDeploymentOnPAW1')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
+      "copy": {
+        "name": "rdsh-vm-loop",
+        "count": "[parameters('numberOfRdshInstances')]"
+      },
       "dependsOn": [
         "[variables('paw1VMDeployment')]",
         "[variables('paw2VMDeployment')]",
@@ -1663,6 +1670,61 @@
         "parameters": {
           "VMName": {
             "value": "[variables('paw1VMName')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "assetLocationStorageAccount": {
+            "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "storageAccountKeyviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretName')]"
+            }
+          },
+          "storageAccountSASTokenviaKeyvault": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultID')]"
+              },
+              "secretName": "[variables('secretnameSASurl')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy RDSH on PAW1 - this needs to be changed to loop",
+      "name": "[variables('rdshDeploymentOnPAW2')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "copy": {
+        "name": "rdsh-vm-loop",
+        "count": "[parameters('numberOfRdshInstances')]"
+      },
+      "dependsOn": [
+        "[variables('paw1VMDeployment')]",
+        "[variables('paw2VMDeployment')]",
+        "[variables('adcsDeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('deployRDSHTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMName": {
+            "value": "[variables('paw2VMName')]"
           },
           "domainName": {
             "value": "[parameters('domainName')]"
