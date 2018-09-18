@@ -1699,7 +1699,7 @@
       }
     },
     {
-      "comments": "Deploy RDSH on PAW1 - this needs to be changed to loop",
+      "comments": "Deploy RDSH on PAW2 - this needs to be changed to loop",
       "name": "[variables('rdshDeploymentOnPAW2')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",

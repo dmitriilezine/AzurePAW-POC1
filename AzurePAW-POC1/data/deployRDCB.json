@@ -60,7 +60,10 @@
     "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
     "CACommonName": "[concat(variables('shortDomainName'),' CA')]",
     "DNSName": "[concat('rds.',parameters('domainName'))]",
-    "gatewayIpRef": "[concat('rds.',parameters('domainName'))]"
+    "gatewayIpRef": "[concat('gateway.',parameters('domainName'))]",
+    "connectionBroker": "[concat('broker.',parameters('domainName'))]",
+    "webAccessServer": "[concat('gateway.',parameters('domainName'))]",
+    "sessionHostNamingPrefix": "PAW-"
   },
   "resources": [
     {
@@ -82,12 +85,12 @@
               "userName": "[parameters('adminUserName')]",
               "password": "PrivateSettingsRef:adminPassword"
             },
-            "connectionBroker": "[concat('broker.',parameters('domainName'))]",
+            "connectionBroker": "[variables('connectionBroker')]",
             "domainName": "[parameters('domainName')]",
             "externalfqdn": "[variables('gatewayIpRef')]",
             "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
-            "sessionHostNamingPrefix": "PAW-",
-            "webAccessServer": "[concat('gateway.',parameters('domainName'))]",
+            "sessionHostNamingPrefix": "[variables('sessionHostNamingPrefix')]",
+            "webAccessServer": "[variables('webAccessServer')]",
             "CACommonName": "[variables('CACommonName')]",
             "DNSName": "[variables('DNSName')]"
           }
