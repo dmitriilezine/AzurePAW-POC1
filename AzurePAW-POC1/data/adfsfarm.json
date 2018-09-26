@@ -5,7 +5,7 @@
     "adfsVMName": {
       "type": "string",
       "metadata": {
-        "description": "The VM name of ADCS Server"
+        "description": "The VM name of ADFS Server"
       }
     },
     "domainName": {
@@ -80,6 +80,10 @@
             "ADFSDNSName": "[variables('ADFSDNSName')]",
             "adminCreds": {
               "userName": "[parameters('adminUserName')]",
+              "password": "PrivateSettingsRef:adminPassword"
+            },
+            "AdfsSvcCreds": {
+              "userName": "svc-ADFS",
               "password": "PrivateSettingsRef:adminPassword"
             }
           }
