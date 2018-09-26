@@ -48,7 +48,11 @@
     "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
     "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
     "ou": "[concat('DC=',variables('shortDomainName'),',DC=',variables('domainSuffix'))]",
-    "upn": "[concat(parameters('domainName'))]"
+    "upn": "[concat(parameters('domainName'))]",
+    "Tier0ServerOperators": "Tier0ServerOperators",
+    "ADFSsvcAccount": "svc-ADFS",
+    "ServiceAccountsOU": "[concat('OU=T0-Service Accounts; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]"
+
 
   },
   "resources": [
@@ -70,7 +74,7 @@
           ]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ExtendAD-DIAD.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),' -ou ',variables('ou'),' -upn ',variables('upn'),'')]",
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ExtendAD-DIAD.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),' -ou ',variables('ou'),' -group ',variables('Tier0ServerOperators'),' -svcADFS ',variables('ADFSsvcAccount'),' -ServiceAccountsOU ',variables('ServiceAccountsOU'),' -upn ',variables('upn'),'')]",
           "storageAccountName": "azurepaw",
           "storageAccountKey": "[parameters('storageAccountKeyviaKeyvault')]"
         }
