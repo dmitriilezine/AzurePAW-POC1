@@ -43,16 +43,21 @@
       "metadata": {
         "description": "Key for the Storage account"
       }
+    },
+    "configurationFunction": {
+      "type": "string",
+      "metadata": {
+        "description": "Configuration function for DSC deployment"
+      }
     }
   },
   "variables": {
-    "CACommonNameOLD": "[concat('Contoso CA')]",
     "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
     "CACommonName": "[concat(variables('shortDomainName'),' CA')]",
-    "ADFSDNSNameOLD": "[concat('fs.contoso.com')]",
     "ADFSDNSName": "[concat('fs.',parameters('domainName'))]",
     "ModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/DeployADFS.zip')]",
-    "ConfigurationFunction": "DeployADFS.ps1\\InstallADFSFarm"
+    "ConfigurationFunctionOLD": "DeployADFS.ps1\\InstallADFSFarm",
+    "ConfigurationFunction": "[parameters('configurationFunction')]"
   },
   "resources": [
     {
