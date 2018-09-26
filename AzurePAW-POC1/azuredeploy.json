@@ -928,7 +928,7 @@
           "domainName": {
             "value": "[parameters('domainName')]"
           },
-          "adAvailabilitySetName": {
+          "availabilitySetName": {
             "value": "[variables('adfsAvailabilitySetName')]"
           }
         }
@@ -977,7 +977,7 @@
           "domainName": {
             "value": "[parameters('domainName')]"
           },
-          "adAvailabilitySetName": {
+          "availabilitySetName": {
             "value": "[variables('adfsAvailabilitySetName')]"
           }
         }
