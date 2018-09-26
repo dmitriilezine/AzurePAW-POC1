@@ -73,7 +73,7 @@
     "primaryADCSIpAddress": "10.0.1.6",
     "primaryAADConnectIpAddress": "10.0.1.7",
     "primaryADFSIpAddress": "10.0.1.8",
-    "primaryADFS2IpAddress": "10.0.1.9",
+    "primaryADFS2IpAddress": "10.0.1.10",
     "primaryHGSIpAddress": "10.0.1.9",
     "primaryADFSProxyIpAddress": "10.0.2.5",
     "primaryJumpServerIpAddress": "10.0.2.4",
