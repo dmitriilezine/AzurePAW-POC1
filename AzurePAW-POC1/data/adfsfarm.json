@@ -59,8 +59,8 @@
     "ModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/DeployADFS.zip')]",
     "ConfigurationFunctionOLD": "DeployADFS.ps1\\InstallADFSFarm",
     "ConfigurationFunction": "[parameters('configurationFunction')]",
-    "TargetDIADOU": "[concat('OU=T0-Identity; OU=T0-Servers; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
-    "ComputerDN": "[concat('CN=',parameters('adfsVMName'),'; OU=Admin; DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]"
+    "TargetDIADOU": "[concat('OU=T0-Identity,OU=T0-Servers,OU=Tier 0,OU=Admin,DC=',variables('shortDomainName'),',DC=',variables('domainSuffix'))]",
+    "ComputerDN": "[concat('CN=',parameters('adfsVMName'),',OU=Admin,DC=',variables('shortDomainName'),',DC=',variables('domainSuffix'))]"
 
   },
   "resources": [
