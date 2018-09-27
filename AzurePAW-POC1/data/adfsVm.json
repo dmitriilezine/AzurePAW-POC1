@@ -102,7 +102,9 @@
     "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
     "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
     "ouPathOLD": "OU=T0-Identity; OU=T0-Servers; OU=Tier 0; OU=Admin; DC=contoso; DC=com",
-    "ouPath": "[concat('OU=T0-Identity; OU=T0-Servers; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
+    "ouPathDIAD": "[concat('OU=T0-Identity; OU=T0-Servers; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
+    "ouPath": "[concat('CN=Computers;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
+
     "joinUser": "[concat(variables('shortDomainName'), '\\', parameters('adminUsername'))]",
     "joinUserDN": "[concat(parameters('domainName'), '\\', parameters('adminUsername'))]",
     "joinuserUPN": "[concat(parameters('adminUsername'),'@',parameters('domainName'))]",
