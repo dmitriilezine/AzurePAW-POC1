@@ -48,7 +48,7 @@
   },
   "variables": {
     "ModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/RDSConfiguration.zip')]",
-    "ConfigurationFunction": "RDSConfiguration.ps1\\SessionHost"
+    "ConfigurationFunction": "RDSConfiguration1-8.ps1\\SessionHost"
   },
   "resources": [
     {

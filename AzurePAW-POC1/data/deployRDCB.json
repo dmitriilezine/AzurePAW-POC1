@@ -8,6 +8,12 @@
         "description": "The VM name of the Server"
       }
     },
+    "gwVMName": {
+      "type": "string",
+      "metadata": {
+        "description": "The VM name of the Server"
+      }
+    },
     "domainName": {
       "type": "string",
       "metadata": {
@@ -55,14 +61,15 @@
   },
   "variables": {
     "ModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/RDSConfiguration.zip')]",
-    "ConfigurationFunction": "RDSConfiguration.ps1\\RDSDeployment",
+    "ConfigurationFunction": "RDSConfiguration1-8.ps1\\RDSDeployment",
     "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
     "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
     "CACommonName": "[concat(variables('shortDomainName'),' CA')]",
     "DNSName": "[concat('rds.',parameters('domainName'))]",
     "gatewayIpRef": "[concat('gateway.',parameters('domainName'))]",
     "connectionBroker": "[concat('broker.',parameters('domainName'))]",
-    "webAccessServer": "[concat('gateway.',parameters('domainName'))]",
+    "webAccessServerOLD": "[concat('gateway.',parameters('domainName'))]",
+    "webAccessServer": "[concat(parameters('gwVMName'),'.',parameters('domainName'))]",
     "sessionHostNamingPrefix": "PAW-"
   },
   "resources": [

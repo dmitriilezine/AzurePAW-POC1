@@ -1697,6 +1697,9 @@
           "VMName": {
             "value": "[variables('cb1VMName')]"
           },
+          "gwVMName": {
+            "value": "[variables('gw1VMName')]"
+          },
           "domainName": {
             "value": "[parameters('domainName')]"
           },
