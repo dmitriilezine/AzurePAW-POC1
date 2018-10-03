@@ -94,6 +94,18 @@
       "metadata": {
         "description": "Availability set for ADFS VMs"
       }
+    },
+    "keyVaultID": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure Key Vault ID where certificate is stored"
+      }
+    },
+    "CertForADFS": {
+      "type": "string",
+      "metadata": {
+        "description": "URI for the cert"
+      }
     }
   },
   "variables": {
@@ -149,7 +161,20 @@
         "osProfile": {
           "computerName": "[parameters('vmName')]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
+          "adminPassword": "[parameters('adminPassword')]",
+          "secrets": [
+            {
+              "sourceVault": {
+                "id": "[parameters('keyVaultID')]"
+              },
+              "vaultCertificates": [
+                {
+                  "certificateUrl": "[parameters('CertForADFS')]",
+                  "certificateStore": "my"
+                }
+              ]
+            }
+          ]
         },
         "storageProfile": {
           "imageReference": {

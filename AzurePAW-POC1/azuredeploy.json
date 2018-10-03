@@ -56,6 +56,12 @@
         "description": "The name of the RG where Key Vault is stored"
       }
     },
+    "CertID": {
+      "type": "string",
+      "metadata": {
+        "description": "The cert container and id from the AKV, for example mycertcontainer/453l4k5j3lk45jk235jl3k5j34 "
+      }
+    },
     "deployHGSServer": {
       "type": "string",
       "defaultValue": "No",
@@ -221,6 +227,7 @@
     "secretnameSASurl": "AzurePAWPOC1SAS",
     "KeyVaultRG": "[parameters('KeyVaultRG')]",
     "keyVaultID": "[concat('/subscriptions/', parameters('subscriptionID'), '/resourceGroups/', variables('KeyVaultRG'), '/providers/Microsoft.KeyVault/vaults/', variables('vaultName'))]",
+    "CertForADFS": "[concat('https://', parameters('vaultName'), '.vault.azure.net:443/keys/', parameters('certID'))]",
 
     "adAvailabilitySetName": "addsAvailabiltySet",
     "cbAvailabilitySetName": "cbAvailabiltySet",
@@ -941,6 +948,12 @@
           },
           "availabilitySetName": {
             "value": "[variables('adfsAvailabilitySetName')]"
+          },
+          "keyVaultID": {
+            "value": "[variables('keyVaultID')]"
+          },
+          "CertForADFS": {
+            "value": "[variables('CertForADFS')]"
           }
         }
       }
@@ -990,6 +1003,12 @@
           },
           "availabilitySetName": {
             "value": "[variables('adfsAvailabilitySetName')]"
+          },
+          "keyVaultID": {
+            "value": "[variables('keyVaultID')]"
+          },
+          "CertForADFS": {
+            "value": "[variables('CertForADFS')]"
           }
         }
       }
