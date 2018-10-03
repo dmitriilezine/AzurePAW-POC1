@@ -55,6 +55,17 @@
       "metadata": {
         "description": "The name of the RG where Key Vault is stored"
       }
+    },
+    "deployHGSServer": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "Deploy HGS Server"
+      }
     }
   },
   "variables": {
@@ -1030,6 +1041,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployHGSServer'),'Yes')]",
       "comments": "Deploy HGS VM",
       "name": "[variables('hgsVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
