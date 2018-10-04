@@ -227,7 +227,7 @@
     "secretnameSASurl": "AzurePAWPOC1SAS",
     "KeyVaultRG": "[parameters('KeyVaultRG')]",
     "keyVaultID": "[concat('/subscriptions/', parameters('subscriptionID'), '/resourceGroups/', variables('KeyVaultRG'), '/providers/Microsoft.KeyVault/vaults/', variables('vaultName'))]",
-    "CertForADFS": "[concat('https://', parameters('vaultName'), '.vault.azure.net:443/keys/', parameters('certID'))]",
+    "CertForADFS": "[concat('https://', parameters('vaultName'), '.vault.azure.net:443/secrets/', parameters('certID'))]",
 
     "adAvailabilitySetName": "addsAvailabiltySet",
     "cbAvailabilitySetName": "cbAvailabiltySet",
