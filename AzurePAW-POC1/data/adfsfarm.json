@@ -49,6 +49,12 @@
       "metadata": {
         "description": "Configuration function for DSC deployment"
       }
+    },
+    "ADFSServiceCert": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the trusted external Cert"
+      }
     }
   },
   "variables": {
@@ -82,6 +88,7 @@
             "domainName": "[parameters('domainName')]",
             "CACommonName": "[variables('CACommonName')]",
             "ADFSDNSName": "[variables('ADFSDNSName')]",
+            "ADFSServiceCert": "[parameters('ADFSServiceCert')]",
             "TargetDIADOU": "[variables('TargetDIADOU')]",
             "ComputerDN": "[variables('ComputerDN')]",
             "adminCreds": {

@@ -62,6 +62,12 @@
         "description": "The cert container and id from the AKV, for example mycertcontainer/453l4k5j3lk45jk235jl3k5j34 "
       }
     },
+    "ADFSServiceCert": {
+      "type": "string",
+      "metadata": {
+        "description": "subject name of the external cert for ADFS "
+      }
+    },
     "deployHGSServer": {
       "type": "string",
       "defaultValue": "No",
@@ -1490,6 +1496,9 @@
           "configurationFunction": {
             "value": "[variables('configurationFunctionDSConADFSvm1')]"
           },
+          "ADFSServiceCert": {
+            "value": "[parameters('ADFSServiceCert')]"
+          },
           "storageAccountKeyviaKeyvault": {
             "reference": {
               "keyVault": {
@@ -1543,6 +1552,9 @@
           },
           "configurationFunction": {
             "value": "[variables('configurationFunctionDSConADFSvm2')]"
+          },
+          "ADFSServiceCert": {
+            "value": "[parameters('ADFSServiceCert')]"
           },
           "storageAccountKeyviaKeyvault": {
             "reference": {
