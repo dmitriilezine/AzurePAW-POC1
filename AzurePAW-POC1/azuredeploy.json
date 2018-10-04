@@ -1564,6 +1564,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployHGSServer'),'Yes')]",
       "comments": "Deploy HGS",
       "name": "[variables('hgsDeployment')]",
       "type": "Microsoft.Resources/deployments",
