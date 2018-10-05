@@ -1538,6 +1538,9 @@
           "adfsVMName": {
             "value": "[variables('adfsVM2Name')]"
           },
+          "primaryADFSserver": {
+            "value": "[variables('adfsVMName')]"
+          },
           "domainName": {
             "value": "[parameters('domainName')]"
           },

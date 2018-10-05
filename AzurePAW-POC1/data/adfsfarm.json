@@ -8,6 +8,12 @@
         "description": "The VM name of ADFS Server"
       }
     },
+    "primaryADFSserver": {
+      "type": "string",
+      "metadata": {
+        "description": "The VM name of the Primary ADFS Server"
+      }
+    },
     "domainName": {
       "type": "string",
       "metadata": {
@@ -91,6 +97,7 @@
             "ADFSServiceCert": "[parameters('ADFSServiceCert')]",
             "TargetDIADOU": "[variables('TargetDIADOU')]",
             "ComputerDN": "[variables('ComputerDN')]",
+            "PrimaryADFSServer": "[parameters('primaryADFSserver')]",
             "adminCreds": {
               "userName": "[parameters('adminUserName')]",
               "password": "PrivateSettingsRef:adminPassword"
