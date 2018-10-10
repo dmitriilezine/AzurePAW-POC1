@@ -102,9 +102,13 @@
     "primaryJumpServerIpAddress": "10.0.2.4",
     "primaryAzurePAW1IpAddress": "10.0.3.4",
     "primaryAzurePAW2IpAddress": "10.0.3.5",
-    "primaryCB1IpAddress": "10.0.3.6",
-    "primaryGW1IpAddress": "10.0.3.7",
-    "primaryAADProxy1IpAddress": "10.0.3.8",
+    "primaryAzurePAW3IpAddress": "10.0.3.6",
+    "primaryCB1IpAddress": "10.0.3.15",
+    "primaryCB2IpAddress": "10.0.3.16",
+    "primaryGW1IpAddress": "10.0.3.17",
+    "primaryGW2IpAddress": "10.0.3.18",
+    "primaryAADProxy1IpAddress": "10.0.3.20",
+    "primaryAADProxy2IpAddress": "10.0.3.21",
 
     "vnetTemplateURL": "[concat(variables('assetLocation'),'/data/vNetDeployment.json')]",
     "nsgTemplateURL": "[concat(variables('assetLocation'),'/data/nsgDeployment.json')]",
@@ -148,9 +152,13 @@
     "hgsVMName": "[substring(concat('HGS-',resourceGroup().Name),0,5)]",
     "paw1VMName": "[substring(concat('PAW-1',resourceGroup().Name),0,5)]",
     "paw2VMName": "[substring(concat('PAW-2',resourceGroup().Name),0,5)]",
+    "paw3VMName": "[substring(concat('PAW-3',resourceGroup().Name),0,5)]",
     "cb1VMName": "[substring(concat('CB1-',resourceGroup().Name),0,5)]",
+    "cb2VMName": "[substring(concat('CB2-',resourceGroup().Name),0,5)]",
     "gw1VMName": "[substring(concat('GW1-',resourceGroup().Name),0,5)]",
-    "aadProxy1VMName": "[substring(concat('AADProxy1',resourceGroup().Name),0,5)]",
+    "gw2VMName": "[substring(concat('GW2-',resourceGroup().Name),0,5)]",
+    "aadProxy1VMName": "[substring(concat('AADProxy1',resourceGroup().Name),0,9)]",
+    "aadProxy2VMName": "[substring(concat('AADProxy2',resourceGroup().Name),0,9)]",
 
     "dnsPrefix": "[tolower(concat(resourceGroup().name,'jump'))]",
 
@@ -189,6 +197,8 @@
     "paw1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('paw1VMDeployment'))]",
     "paw2VMDeployment": "CreatePAW2VM",
     "paw2VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('paw2VMDeployment'))]",
+    "paw3VMDeployment": "CreatePAW3VM",
+    "paw3VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('paw3VMDeployment'))]",
     "adcsDeployment": "DeployADCS",
     "adcsDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('adcsDeployment'))]",
     "createADCSTemplatesDeployment": "CreateADCSTemplates",
@@ -205,10 +215,16 @@
     "DIADouGPODeploymentId": "[concat('Microsoft.Resources/deployments/', variables('DIADouGPODeployment'))]",
     "cb1VMDeployment": "CreateCB1VM",
     "cb1VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('cb1VMDeployment'))]",
+    "cb2VMDeployment": "CreateCB2VM",
+    "cb2VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('cb2VMDeployment'))]",
     "gw1VMDeployment": "CreateGW1VM",
     "gw1VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('gw1VMDeployment'))]",
+    "gw2VMDeployment": "CreateGW2VM",
+    "gw2VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('gw2VMDeployment'))]",
     "aadProxy1VMDeployment": "CreateAADProxy1VM",
     "aadProxy1VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadProxy1VMDeployment'))]",
+    "aadProxy2VMDeployment": "CreateAADProxy2VM",
+    "aadProxy2VMDeploymentId": "[concat('Microsoft.Resources/deployments/', variables('aadProxy2VMDeployment'))]",
     "cb1Deployment": "DeployRDCB-RDLS",
     "cb1DeploymentId": "[concat('Microsoft.Resources/deployments/', variables('cb1Deployment'))]",
     "gw1Deployment": "DeployRDGW-RDWeb",
@@ -275,9 +291,13 @@
     "hgsNICName": "[concat('HGS-Nic',resourceGroup().name)]",
     "paw1NICName": "[concat('PAW1-Nic',resourceGroup().name)]",
     "paw2NICName": "[concat('PAW2-Nic',resourceGroup().name)]",
+    "paw3NICName": "[concat('PAW3-Nic',resourceGroup().name)]",
     "cb1NICName": "[concat('CB1-Nic',resourceGroup().name)]",
+    "cb2NICName": "[concat('CB2-Nic',resourceGroup().name)]",
     "gw1NICName": "[concat('GW1-Nic',resourceGroup().name)]",
+    "gw2NICName": "[concat('GW2-Nic',resourceGroup().name)]",
     "aadProxy1NICName": "[concat('AADProxy1-Nic',resourceGroup().name)]",
+    "aadProxy2NICName": "[concat('AADProxy2-Nic',resourceGroup().name)]",
 
     "virtualNetworkName": "[concat('ADVNET',resourceGroup().name)]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
@@ -1215,7 +1235,58 @@
       }
     },
     {
-      "comments": "Deploy RD CB and LS VM #1",
+      "comments": "Deploy Azure PAW #3 VM",
+      "name": "[variables('paw3VMDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('updateVNetDNS1')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('AzurePAW1VMTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "subnetResourceID": {
+            "value": "[variables('pawSubnetID')]"
+          },
+          "windowsImageSKU": {
+            "value": "[variables('OSVersion')]"
+          },
+          "vmName": {
+            "value": "[variables('paw3VMName')]"
+          },
+          "vmSize": {
+            "value": "[variables('VMSize')]"
+          },
+          "NicName": {
+            "value": "[variables('paw3NICName')]"
+          },
+          "primaryIpAddress": {
+            "value": "[variables('primaryAzurePAW3IpAddress')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('rdshAvailabilitySetName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathNone')]"
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy RDS CB and LS VM #1",
       "name": "[variables('cb1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -1266,7 +1337,58 @@
       }
     },
     {
-      "comments": "Deploy RD GW and Web VM #1",
+      "comments": "Deploy RDS CB and LS VM #2",
+      "name": "[variables('cb2VMDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('updateVNetDNS1')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('AzurePAW1VMTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "subnetResourceID": {
+            "value": "[variables('pawSubnetID')]"
+          },
+          "windowsImageSKU": {
+            "value": "[variables('OSVersion')]"
+          },
+          "vmName": {
+            "value": "[variables('cb2VMName')]"
+          },
+          "vmSize": {
+            "value": "[variables('VMSize')]"
+          },
+          "NicName": {
+            "value": "[variables('cb2NICName')]"
+          },
+          "primaryIpAddress": {
+            "value": "[variables('primaryCB2IpAddress')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('cbAvailabilitySetName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathNone')]"
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy RDS GW and Web VM #1",
       "name": "[variables('gw1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -1317,7 +1439,58 @@
       }
     },
     {
-      "comments": "Deploy AAD Proxy VM #1",
+      "comments": "Deploy RDS GW and Web VM #2",
+      "name": "[variables('gw2VMDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('updateVNetDNS1')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('AzurePAW1VMTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "subnetResourceID": {
+            "value": "[variables('pawSubnetID')]"
+          },
+          "windowsImageSKU": {
+            "value": "[variables('OSVersion')]"
+          },
+          "vmName": {
+            "value": "[variables('gw2VMName')]"
+          },
+          "vmSize": {
+            "value": "[variables('VMSize')]"
+          },
+          "NicName": {
+            "value": "[variables('gw2NICName')]"
+          },
+          "primaryIpAddress": {
+            "value": "[variables('primaryGW2IpAddress')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('gwAvailabilitySetName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathNone')]"
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy AAD App Proxy VM #1",
       "name": "[variables('aadProxy1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -1355,6 +1528,58 @@
           },
           "primaryIpAddress": {
             "value": "[variables('primaryAADProxy1IpAddress')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('aadProxyAvailabilitySetName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathT0Devices')]"
+          }
+        }
+      }
+    },
+    {
+      "comments": "Deploy AAD App Proxy VM #2",
+      "name": "[variables('aadProxy2VMDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('AzurePAW1VMTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "subnetResourceID": {
+            "value": "[variables('pawSubnetID')]"
+          },
+          "windowsImageSKU": {
+            "value": "[variables('OSVersion')]"
+          },
+          "vmName": {
+            "value": "[variables('aadProxy2VMName')]"
+          },
+          "vmSize": {
+            "value": "[variables('VMSize')]"
+          },
+          "NicName": {
+            "value": "[variables('aadProxy2NICName')]"
+          },
+          "primaryIpAddress": {
+            "value": "[variables('primaryAADProxy2IpAddress')]"
           },
           "domainName": {
             "value": "[parameters('domainName')]"
