@@ -53,7 +53,21 @@
             }
           },
           {
-            "name": "allow_RDP_to_BackEnd_Servers",
+            "name": "allow_RDP_from_RDS_to_BackEnd_Servers",
+            "properties": {
+              "description": "Allow RDP to AD Servers",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[variables('pawSubnetRange')]",
+              "destinationAddressPrefix": "[variables('besubnetrange')]",
+              "access": "Allow",
+              "priority": 119,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_RDP_from_FrontEnd_to_BackEnd_Servers",
             "properties": {
               "description": "Allow RDP to AD Servers",
               "protocol": "Tcp",
