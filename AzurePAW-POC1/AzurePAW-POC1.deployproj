@@ -47,6 +47,7 @@
     <None Include="data\deployRDCB.json" />
     <None Include="data\deployRDGW.json" />
     <None Include="data\deployRDSH.json" />
+    <None Include="data\ILB-sample.json" />
     <None Include="data\jumpServerVm.json" />
     <None Include="data\nsgDeployment.json" />
     <None Include="data\PAW1VM.json" />

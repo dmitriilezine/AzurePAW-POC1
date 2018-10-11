@@ -78,6 +78,17 @@
       "metadata": {
         "description": "Deploy HGS Server"
       }
+    },
+    "deployPSVPN": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "Deploy Point to Site VPN"
+      }
     }
   },
   "variables": {
@@ -496,6 +507,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployPSVPN'),'Yes')]",
       "name": "[variables('psVPNDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
