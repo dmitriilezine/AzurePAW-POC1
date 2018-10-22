@@ -48,7 +48,6 @@
   "variables": {
     "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ExtendAD-DIAD.ps1')]",
     "psDIADScriptZipPackageURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ExportImportAD.zip')]",
-    "psScriptCertTemplatesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/initiateCreateCertTemplates.ps1')]",
     "psScriptCertTemplatesZipPackageURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/createCertTemplates.zip')]",
 
     "ouoldold": "[concat('CN=Users,DC=contoso,DC=com')]",
@@ -80,7 +79,6 @@
           "fileUris": [
             "[variables('psScriptURL')]",
             "[variables('psDIADScriptZipPackageURL')]",
-            "[variables('psScriptCertTemplatesURL')]",
             "[variables('psScriptCertTemplatesZipPackageURL')]"
           ]
         },

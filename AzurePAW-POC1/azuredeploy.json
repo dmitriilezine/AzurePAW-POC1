@@ -898,8 +898,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS2')]",
-        "[variables('DIADouGPODeployment')]"
+        "[variables('updateVNetDNS2')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -936,7 +935,7 @@
             "value": "[parameters('domainName')]"
           },
           "ouPath": {
-            "value": "[variables('ouPathAdmin')]"
+            "value": "[variables('ouPathNone')]"
           }
         }
       }
@@ -1992,7 +1991,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('deployDC2Ad')]"
+        "[variables('deployDC2Ad')]",
+        "[variables('adcsVmDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
