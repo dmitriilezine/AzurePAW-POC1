@@ -101,6 +101,17 @@
         "description": "Deploy Point to Site VPN"
       }
     },
+    "deployAADConnect": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "Deploy Point to Site VPN"
+      }
+    },
     "createCertTemplates": {
       "type": "string",
       "defaultValue": "No",
@@ -941,6 +952,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployAADConnect'),'Yes')]",
       "comments": "Deploy Azure AD Connect VM",
       "name": "[variables('aadConnectVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1938,6 +1950,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployAADConnect'),'Yes')]",
       "comments": "Download and install AAD Connect",
       "name": "[variables('aadconnectDeployment')]",
       "type": "Microsoft.Resources/deployments",
