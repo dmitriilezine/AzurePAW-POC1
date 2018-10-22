@@ -14,14 +14,17 @@
     "feNSGName": { "type": "string" },
     "pawNSGName": { "type": "string" },
     "adfsNSGName": { "type": "string" },
+    "adfsProxyNSGName": { "type": "string" },
     "beSubnetName": { "type": "string" },
     "feSubnetName": { "type": "string" },
     "pawSubnetName": { "type": "string" },
     "adfsSubnetName": { "type": "string" },
+    "adfsProxySubnetName": { "type": "string" },
     "beSubnetId": { "type": "string" },
     "feSubnetId": { "type": "string" },
     "pawSubnetId": { "type": "string" },
     "adfsSubnetId": { "type": "string" },
+    "adfsProxySubnetId": { "type": "string" },
     "sourceClientIP": { "type": "string" }
   },
   "variables": {
@@ -29,6 +32,7 @@
     "feSubnetRange": "[parameters('subnets')[1].properties.addressPrefix]",
     "pawSubnetRange": "[parameters('subnets')[2].properties.addressPrefix]",
     "adfsSubnetRange": "[parameters('subnets')[3].properties.addressPrefix]",
+    "adfsProxySubnetRange": "[parameters('subnets')[4].properties.addressPrefix]",
     "location": "[resourceGroup().location]"
   },
   "resources": [
@@ -516,7 +520,7 @@
       },
       "properties": {
         "securityRules": [
-         {
+          {
             "name": "allow_RDP_from_FrontEnd_to_PAW_Servers",
             "properties": {
               "description": "Allow RDP to AD Servers",
@@ -566,6 +570,47 @@
               "destinationPortRange": "3389",
               "sourceAddressPrefix": "[variables('feSubnetRange')]",
               "destinationAddressPrefix": "[variables('adfsSubnetRange')]",
+              "access": "Allow",
+              "priority": 120,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('adfsProxyNSGName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "ADFS Proxy Subnet NSG"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow_RDP_from_RDS_to_ADFSProxy_Servers",
+            "properties": {
+              "description": "Allow RDP to ADFS Proxy Servers",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[variables('pawSubnetRange')]",
+              "destinationAddressPrefix": "[variables('adfsProxySubnetRange')]",
+              "access": "Allow",
+              "priority": 119,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_RDP_from_FrontEnd_to_ADFSProxy_Servers",
+            "properties": {
+              "description": "Allow RDP to ADFS Proxy Servers",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[variables('feSubnetRange')]",
+              "destinationAddressPrefix": "[variables('adfsProxySubnetRange')]",
               "access": "Allow",
               "priority": 120,
               "direction": "Inbound"

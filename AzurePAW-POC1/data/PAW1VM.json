@@ -19,7 +19,7 @@
       "metadata": {
         "description": "Size of the VM data disk in GB"
       },
-      "defaultValue": 2
+      "defaultValue": 10
     },
     "domainName": {
       "type": "string",
