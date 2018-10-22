@@ -1678,7 +1678,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('adcsVmDeployment')]"
+        "[variables('adcsVmDeployment')]",
+        "[variables('DIADouGPODeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1767,7 +1768,7 @@
       }
     },
     {
-      "comments": "Deploy ADFS Farm",
+      "comments": "Install ADFS Role",
       "name": "[variables('adfsFarmTemplatesDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
