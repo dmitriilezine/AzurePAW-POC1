@@ -13,18 +13,22 @@
     "beNSGName": { "type": "string" },
     "feNSGName": { "type": "string" },
     "pawNSGName": { "type": "string" },
+    "adfsNSGName": { "type": "string" },
     "beSubnetName": { "type": "string" },
     "feSubnetName": { "type": "string" },
     "pawSubnetName": { "type": "string" },
+    "adfsSubnetName": { "type": "string" },
     "beSubnetId": { "type": "string" },
     "feSubnetId": { "type": "string" },
     "pawSubnetId": { "type": "string" },
+    "adfsSubnetId": { "type": "string" },
     "sourceClientIP": { "type": "string" }
   },
   "variables": {
     "besubnetrange": "[parameters('subnets')[0].properties.addressPrefix]",
     "feSubnetRange": "[parameters('subnets')[1].properties.addressPrefix]",
     "pawSubnetRange": "[parameters('subnets')[2].properties.addressPrefix]",
+    "adfsSubnetRange": "[parameters('subnets')[3].properties.addressPrefix]",
     "location": "[resourceGroup().location]"
   },
   "resources": [
@@ -49,6 +53,20 @@
               "destinationAddressPrefix": "[variables('besubnetrange')]",
               "access": "Deny",
               "priority": 300,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_HTTP",
+            "properties": {
+              "description": "Allow HTTP Communication - Remove from DC Subnet to ADFS Subnet",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefix": "[variables('besubnetrange')]",
+              "access": "Allow",
+              "priority": 118,
               "direction": "Inbound"
             }
           },
@@ -498,17 +516,58 @@
       },
       "properties": {
         "securityRules": [
-          {
-            "name": "allow_RDP_from_PhysicalDeviceIP_TEST_ONLY",
+         {
+            "name": "allow_RDP_from_FrontEnd_to_PAW_Servers",
             "properties": {
-              "description": "Allow communication from Internet to PAW",
+              "description": "Allow RDP to AD Servers",
               "protocol": "Tcp",
               "sourcePortRange": "*",
               "destinationPortRange": "3389",
-              "sourceAddressPrefix": "[parameters('sourceClientIP')]",
+              "sourceAddressPrefix": "[variables('feSubnetRange')]",
               "destinationAddressPrefix": "[variables('pawSubnetRange')]",
               "access": "Allow",
-              "priority": 103,
+              "priority": 120,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('adfsNSGName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "ADFS Subnet NSG"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow_RDP_from_RDS_to_ADFS_Servers",
+            "properties": {
+              "description": "Allow RDP to ADFS Servers",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[variables('pawSubnetRange')]",
+              "destinationAddressPrefix": "[variables('adfsSubnetRange')]",
+              "access": "Allow",
+              "priority": 119,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_RDP_from_FrontEnd_to_ADFS_Servers",
+            "properties": {
+              "description": "Allow RDP to ADFS Servers",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[variables('feSubnetRange')]",
+              "destinationAddressPrefix": "[variables('adfsSubnetRange')]",
+              "access": "Allow",
+              "priority": 120,
               "direction": "Inbound"
             }
           }

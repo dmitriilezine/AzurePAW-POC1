@@ -55,8 +55,7 @@
       "type": "string",
       "metadata": {
         "description": "The size of the AD VMs Created"
-      },
-      "defaultValue": "Standard_A2"
+      }
     },
     "windowsImageOffer": {
       "type": "string",
@@ -105,6 +104,12 @@
       "type": "string",
       "metadata": {
         "description": "URI for the cert"
+      }
+    },
+    "ouPath": {
+      "type": "string",
+      "metadata": {
+        "description": "Target OU for VM"
       }
     }
   },
@@ -244,7 +249,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "Name": "[parameters('domainName')]",
-          "OUPath": "[variables('ouPath')]",
+          "OUPath": "[parameters('ouPath')]",
           "User": "[variables('joinUserDN')]",
           "Restart": "true",
           "Options": "[variables('domainJoinOptions')]"

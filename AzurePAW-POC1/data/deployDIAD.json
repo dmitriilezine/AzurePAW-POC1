@@ -26,6 +26,12 @@
         "description": "The password for the Administrator account of the new VMs and Domain"
       }
     },
+    "adcsVMName": {
+      "type": "string",
+      "metadata": {
+        "description": "The VM name of ADCS Server"
+      }
+    },
     "assetLocationStorageAccount": {
       "type": "string",
       "metadata": {
@@ -42,6 +48,9 @@
   "variables": {
     "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ExtendAD-DIAD.ps1')]",
     "psDIADScriptZipPackageURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ExportImportAD.zip')]",
+    "psScriptCertTemplatesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/initiateCreateCertTemplates.ps1')]",
+    "psScriptCertTemplatesZipPackageURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/createCertTemplates.zip')]",
+
     "ouoldold": "[concat('CN=Users,DC=contoso,DC=com')]",
     "ouOLD": "[concat('DC=contoso,DC=com')]",
     "upnOLD": "[concat('contoso.com')]",
@@ -70,11 +79,13 @@
         "settings": {
           "fileUris": [
             "[variables('psScriptURL')]",
-            "[variables('psDIADScriptZipPackageURL')]"
+            "[variables('psDIADScriptZipPackageURL')]",
+            "[variables('psScriptCertTemplatesURL')]",
+            "[variables('psScriptCertTemplatesZipPackageURL')]"
           ]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ExtendAD-DIAD.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),' -ou ',variables('ou'),' -group ',variables('Tier0ServerOperators'),' -svcADFS ',variables('ADFSsvcAccount'),' -ServiceAccountsOU ',variables('ServiceAccountsOU'),' -upn ',variables('upn'),'')]",
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ExtendAD-DIAD.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),' -CAName ',parameters('adcsVMName'),' -ou ',variables('ou'),' -group ',variables('Tier0ServerOperators'),' -svcADFS ',variables('ADFSsvcAccount'),' -ServiceAccountsOU ',variables('ServiceAccountsOU'),' -upn ',variables('upn'),'')]",
           "storageAccountName": "azurepaw",
           "storageAccountKey": "[parameters('storageAccountKeyviaKeyvault')]"
         }

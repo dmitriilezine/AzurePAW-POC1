@@ -55,8 +55,7 @@
       "type": "string",
       "metadata": {
         "description": "The size of the AD VMs Created"
-      },
-      "defaultValue": "Standard_A2"
+      }
     },
     "windowsImageOffer": {
       "type": "string",
@@ -98,7 +97,7 @@
     "ouPath": {
       "type": "string",
       "metadata": {
-        "description": "Availability set for VMs"
+        "description": "Target OU for VM"
       }
     }
   },

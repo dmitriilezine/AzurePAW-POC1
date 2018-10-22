@@ -68,6 +68,17 @@
         "description": "subject name of the external cert for ADFS "
       }
     },
+    "VirtualMachineSize": {
+      "type": "string",
+      "allowedValues": [
+        "Standard_DS12_v2",
+        "Standard_A2"
+      ],
+      "metadata": {
+        "description": "VM Size. The bigger it is, the more $ you will spend."
+      },
+      "defaultValue": "Standard_A2"
+    },
     "deployHGSServer": {
       "type": "string",
       "defaultValue": "No",
@@ -89,12 +100,23 @@
       "metadata": {
         "description": "Deploy Point to Site VPN"
       }
+    },
+    "createCertTemplates": {
+      "type": "string",
+      "defaultValue": "No",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "Placeholder for CertTemplate to be removed when is working via DIAD deployment"
+      }
     }
   },
   "variables": {
     "assetLocation": "https://raw.githubusercontent.com/dmitriilezine/AzurePAW-POC1/master/AzurePAW-POC1",
     "assetLocationStorageAccount": "https://azurepaw.blob.core.windows.net",
-    "VMSize": "Standard_A2",
+    "VMSize": "[parameters('VirtualMachineSize')]",
     "OSVersion": "2016-Datacenter",
     "numberOfRdshInstances": 2,
     "virtualNetworkAddressRange": "10.0.0.0/16",
@@ -102,13 +124,14 @@
     "frontendNetworkSubnet": "10.0.2.0/24",
     "azurepawNetworkSubnet": "10.0.3.0/24",
     "gatewayNetworkSubnet": "10.0.4.0/24",
+    "adfsNetworkSubnet": "10.0.5.0/24",
     "primaryDC1IpAddress": "10.0.1.4",
     "primaryDC2IpAddress": "10.0.1.5",
     "primaryADCSIpAddress": "10.0.1.6",
     "primaryAADConnectIpAddress": "10.0.1.7",
-    "primaryADFSIpAddress": "10.0.1.8",
-    "primaryADFS2IpAddress": "10.0.1.10",
-    "primaryHGSIpAddress": "10.0.1.9",
+    "primaryADFSIpAddress": "10.0.5.4",
+    "primaryADFS2IpAddress": "10.0.5.5",
+    "primaryHGSIpAddress": "10.0.1.8",
     "primaryADFSProxyIpAddress": "10.0.2.5",
     "primaryJumpServerIpAddress": "10.0.2.4",
     "primaryAzurePAW1IpAddress": "10.0.3.4",
@@ -250,6 +273,9 @@
     "shortDomainName": "[split(parameters('domainName'),'.')[0]]",
     "domainSuffix": "[split(parameters('domainName'),'.')[1]]",
     "ouPathT0Devices": "[concat('OU=T0-Devices; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
+    "ouPathAdmin": "[concat('OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
+    "ouPathHGS": "[concat('OU=T0-HGS; OU=T0-Servers; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
+    "ouPathT0Idenity": "[concat('OU=T0-Identity; OU=T0-Servers; OU=Tier 0; OU=Admin;', 'DC=',variables('shortDomainName'),'; DC=',variables('domainSuffix'))]",
     "ouPathNone": "",
 
     "configurationFunctionDSConADFSvm1": "DeployADFS.ps1\\InstallADFSFarm",
@@ -290,6 +316,8 @@
     "feNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('feNSGName'))]",
     "pawNSGName": "[concat('PAW-NSG',resourceGroup().name)]",
     "pawNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('pawNSGName'))]",
+    "adfsNSGName": "[concat('ADFS-NSG',resourceGroup().name)]",
+    "adfsNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('adfsNSGName'))]",
 
     "dc1NICName": "[concat('DC1-Nic',resourceGroup().name)]",
     "dc2NICName": "[concat('DC2-Nic',resourceGroup().name)]",
@@ -320,6 +348,8 @@
     "pawSubnetID": "[concat(variables('vnetID'),'/subnets/',variables('pawSubnetName'))]",
     "gatewaySubnetName": "GatewaySubnet",
     "gatewaySubnetID": "[concat(variables('vnetID'),'/subnets/',variables('gatewaySubnetName'))]",
+    "adfsSubnetName": "adfsSubnet",
+    "adfsSubnetID": "[concat(variables('vnetID'),'/subnets/',variables('adfsSubnetName'))]",
     "gatewayPublicIPName": "[concat('PSVPN-IP',resourceGroup().name)]",
     "gatewayName": "[concat('PSVPN',resourceGroup().name)]",
     "gatewaySKU": "Basic",
@@ -352,6 +382,15 @@
           "addressPrefix": "[variables('azurepawNetworkSubnet')]",
           "networkSecurityGroup": {
             "id": "[variables('pawNSGID')]"
+          }
+        }
+      },
+      {
+        "name": "[variables('adfsSubnetName')]",
+        "properties": {
+          "addressPrefix": "[variables('adfsNetworkSubnet')]",
+          "networkSecurityGroup": {
+            "id": "[variables('adfsNSGID')]"
           }
         }
       },
@@ -456,12 +495,15 @@
           "beNSGName": { "value": "[variables('beNSGName')]" },
           "feNSGName": { "value": "[variables('feNSGName')]" },
           "pawNSGName": { "value": "[variables('pawNSGName')]" },
+          "adfsNSGName": { "value": "[variables('adfsNSGName')]" },
           "beSubnetName": { "value": "[variables('backendSubnetName')]" },
           "feSubnetName": { "value": "[variables('frontendSubnetName')]" },
           "pawSubnetName": { "value": "[variables('pawSubnetName')]" },
+          "adfsSubnetName": { "value": "[variables('adfsSubnetName')]" },
           "beSubnetId": { "value": "[variables('backendSubnetID')]" },
           "feSubnetId": { "value": "[variables('frontendSubnetID')]" },
           "pawSubnetId": { "value": "[variables('pawSubnetID')]" },
+          "adfsSubnetId": { "value": "[variables('adfsSubnetID')]" },
           "sourceClientIP": { "value": "[parameters('sourceClientIP')]" }
         }
       }
@@ -856,7 +898,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]"
+        "[variables('updateVNetDNS2')]",
+        "[variables('DIADouGPODeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -891,6 +934,9 @@
           },
           "domainName": {
             "value": "[parameters('domainName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -937,6 +983,9 @@
           },
           "domainName": {
             "value": "[parameters('domainName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -964,7 +1013,7 @@
             "value": "[parameters('adminPassword')]"
           },
           "subnetResourceID": {
-            "value": "[variables('backendSubnetID')]"
+            "value": "[variables('adfsSubnetID')]"
           },
           "windowsImageSKU": {
             "value": "[variables('OSVersion')]"
@@ -992,6 +1041,9 @@
           },
           "CertForADFS": {
             "value": "[variables('CertForADFS')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -1019,7 +1071,7 @@
             "value": "[parameters('adminPassword')]"
           },
           "subnetResourceID": {
-            "value": "[variables('backendSubnetID')]"
+            "value": "[variables('adfsSubnetID')]"
           },
           "windowsImageSKU": {
             "value": "[variables('OSVersion')]"
@@ -1047,6 +1099,9 @@
           },
           "CertForADFS": {
             "value": "[variables('CertForADFS')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -1093,6 +1148,9 @@
           },
           "domainName": {
             "value": "[parameters('domainName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathT0Idenity')]"
           }
         }
       }
@@ -1140,6 +1198,9 @@
           },
           "domainName": {
             "value": "[parameters('domainName')]"
+          },
+          "ouPath": {
+            "value": "[variables('ouPathHGS')]"
           }
         }
       }
@@ -1150,7 +1211,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]"
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1190,7 +1252,7 @@
             "value": "[variables('rdshAvailabilitySetName')]"
           },
           "ouPath": {
-            "value": "[variables('ouPathNone')]"
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -1201,7 +1263,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]"
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1241,7 +1304,7 @@
             "value": "[variables('rdshAvailabilitySetName')]"
           },
           "ouPath": {
-            "value": "[variables('ouPathNone')]"
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -1252,7 +1315,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]"
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1292,7 +1356,7 @@
             "value": "[variables('rdshAvailabilitySetName')]"
           },
           "ouPath": {
-            "value": "[variables('ouPathNone')]"
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -1303,7 +1367,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]"
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1343,7 +1408,7 @@
             "value": "[variables('cbAvailabilitySetName')]"
           },
           "ouPath": {
-            "value": "[variables('ouPathNone')]"
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -1354,7 +1419,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]"
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1394,7 +1460,7 @@
             "value": "[variables('cbAvailabilitySetName')]"
           },
           "ouPath": {
-            "value": "[variables('ouPathNone')]"
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -1405,7 +1471,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]"
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1445,7 +1512,7 @@
             "value": "[variables('gwAvailabilitySetName')]"
           },
           "ouPath": {
-            "value": "[variables('ouPathNone')]"
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -1456,7 +1523,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('updateVNetDNS1')]"
+        "[variables('updateVNetDNS1')]",
+        "[variables('DIADouGPODeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1496,7 +1564,7 @@
             "value": "[variables('gwAvailabilitySetName')]"
           },
           "ouPath": {
-            "value": "[variables('ouPathNone')]"
+            "value": "[variables('ouPathAdmin')]"
           }
         }
       }
@@ -1611,8 +1679,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('adcsVmDeployment')]",
-        "[variables('createADCSTemplatesDeployment')]"
+        "[variables('adcsVmDeployment')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1656,6 +1723,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('createCertTemplates'),'Yes')]",
       "comments": "Create Certificate Templates in ADDS",
       "name": "[variables('createADCSTemplatesDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1924,11 +1992,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('adcsDeployment')]",
-        "[variables('gw1VMDeployment')]",
-        "[variables('paw1VMDeployment')]",
-        "[variables('paw2VMDeployment')]",
-        "[variables('cb1VMDeployment')]"
+        "[variables('deployDC2Ad')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1951,6 +2015,9 @@
           },
           "assetLocationStorageAccount": {
             "value": "[variables('assetLocationStorageAccount')]"
+          },
+          "adcsVMName": {
+            "value": "[variables('adcsVMName')]"
           },
           "storageAccountKeyviaKeyvault": {
             "reference": {
