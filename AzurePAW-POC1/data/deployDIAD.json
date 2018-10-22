@@ -49,6 +49,7 @@
     "psScriptURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ExtendAD-DIAD.ps1')]",
     "psDIADScriptZipPackageURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ExportImportAD.zip')]",
     "psScriptCertTemplatesZipPackageURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/createCertTemplates.zip')]",
+    "psScriptADFSDeltaURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/ADFSDeltaGPO.zip')]",
 
     "ouoldold": "[concat('CN=Users,DC=contoso,DC=com')]",
     "ouOLD": "[concat('DC=contoso,DC=com')]",
@@ -79,11 +80,12 @@
           "fileUris": [
             "[variables('psScriptURL')]",
             "[variables('psDIADScriptZipPackageURL')]",
-            "[variables('psScriptCertTemplatesZipPackageURL')]"
+            "[variables('psScriptCertTemplatesZipPackageURL')]",
+            "[variables('psScriptADFSDeltaURL')]"
           ]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ExtendAD-DIAD.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),' -CAName ',parameters('adcsVMName'),' -ou ',variables('ou'),' -group ',variables('Tier0ServerOperators'),' -svcADFS ',variables('ADFSsvcAccount'),' -ServiceAccountsOU ',variables('ServiceAccountsOU'),' -upn ',variables('upn'),'')]",
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ExtendAD-DIAD.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'),' -CAName ',parameters('adcsVMName'),' -domainname ',parameters('domainName'),' -shortname ',variables('shortDomainName'),' -ou ',variables('ou'),' -group ',variables('Tier0ServerOperators'),' -svcADFS ',variables('ADFSsvcAccount'),' -ServiceAccountsOU ',variables('ServiceAccountsOU'),' -upn ',variables('upn'),'')]",
           "storageAccountName": "azurepaw",
           "storageAccountKey": "[parameters('storageAccountKeyviaKeyvault')]"
         }
