@@ -217,6 +217,12 @@
     "deployNSGsId": "[concat('Microsoft.Resources/deployments/', variables('deployNSGs'))]",
     "deployILBforADFS": "DeployILBforADFS",
     "deployILBforADFSId": "[concat('Microsoft.Resources/deployments/', variables('deployILBforADFS'))]",
+    "deployILBforADFSProxy": "DeployILBforADFSProxy",
+    "deployILBforADFSProxyId": "[concat('Microsoft.Resources/deployments/', variables('deployILBforADFSProxy'))]",
+    "deployILBforRDSCB": "DeployILBforRDSCB",
+    "deployILBforRDSCBId": "[concat('Microsoft.Resources/deployments/', variables('deployILBforRDSCB'))]",
+    "deployILBforRDSGW": "DeployILBforRDSGW",
+    "deployILBforRDSGWId": "[concat('Microsoft.Resources/deployments/', variables('deployILBforRDSGW'))]",
     "deployPrimaryAd": "ConfigureAD",
     "deployPrimaryAdId": "[concat('Microsoft.Resources/deployments/', variables('deployPrimaryAd'))]",
     "deployDC2Ad": "PromoteDC2toAD",
@@ -326,11 +332,14 @@
     "rpdNAT": "[concat('ADRDPNAT',resourceGroup().name)]",
     "rdpPort": "3389",
     "ilbADFSName": "[concat('ilbADFS',resourceGroup().name)]",
+    "ilbADFSID": "[resourceId('Microsoft.Network/loadBalancers',variables('ilbADFSName'))]",
     "ilbADFSProxyName": "[concat('ilbADFSProxy',resourceGroup().name)]",
+    "ilbADFSProxyID": "[resourceId('Microsoft.Network/loadBalancers',variables('ilbADFSProxyName'))]",
     "ilbRDSCBName": "[concat('ilbRDSCB',resourceGroup().name)]",
+    "ilbRDSCBID": "[resourceId('Microsoft.Network/loadBalancers',variables('ilbRDSCBName'))]",
     "ilbRDSGWName": "[concat('ilbRDSGW',resourceGroup().name)]",
-
-
+    "ilbRDSGWID": "[resourceId('Microsoft.Network/loadBalancers',variables('ilbRDSGWName'))]",
+    
     "beNSGName": "[concat('BackEndNSG',resourceGroup().name)]",
     "beNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('beNSGName'))]",
     "feNSGName": "[concat('FrontEndNSG',resourceGroup().name)]",
@@ -613,6 +622,57 @@
           "ilbName": { "value": "[variables('ilbADFSName')]" },
           "subnetResourceID": { "value": "[variables('adfsSubnetID')]" },
           "ilbPrivateIPAddress": { "value": "[variables('ilbADFSprivateIPAddress')]" }
+        }
+      }
+    },
+    {
+      "name": "[variables('deployILBforADFSProxy')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('deployVNetId')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('ilbTemplateURL')]" },
+        "parameters": {
+          "ilbName": { "value": "[variables('ilbADFSProxyName')]" },
+          "subnetResourceID": { "value": "[variables('adfsProxySubnetID')]" },
+          "ilbPrivateIPAddress": { "value": "[variables('ilbADFSProxyprivateIPAddress')]" }
+        }
+      }
+    },
+    {
+      "name": "[variables('deployILBforRDSCB')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('deployVNetId')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('ilbTemplateURL')]" },
+        "parameters": {
+          "ilbName": { "value": "[variables('ilbRDSCBName')]" },
+          "subnetResourceID": { "value": "[variables('pawSubnetID')]" },
+          "ilbPrivateIPAddress": { "value": "[variables('ilbRDSCBprivateIPAddress')]" }
+        }
+      }
+    },
+    {
+      "name": "[variables('deployILBforRDSGW')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('deployVNetId')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('ilbTemplateURL')]" },
+        "parameters": {
+          "ilbName": { "value": "[variables('ilbRDSGWName')]" },
+          "subnetResourceID": { "value": "[variables('pawSubnetID')]" },
+          "ilbPrivateIPAddress": { "value": "[variables('ilbRDSGWprivateIPAddress')]" }
         }
       }
     },
@@ -1112,6 +1172,9 @@
           },
           "ouPath": {
             "value": "[variables('ouPathAdmin')]"
+          },
+          "ilbID": {
+            "value": "[variables('ilbADFSID')]"
           }
         }
       }
@@ -1170,6 +1233,9 @@
           },
           "ouPath": {
             "value": "[variables('ouPathAdmin')]"
+          },
+          "ilbID": {
+            "value": "[variables('ilbADFSID')]"
           }
         }
       }
