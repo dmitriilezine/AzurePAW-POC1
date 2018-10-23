@@ -94,13 +94,19 @@
         "description": "Availability set for VMs"
       }
     },
-      "ouPath": {
-        "type": "string",
-        "metadata": {
-          "description": "Target OU for VM"
-        }
+    "ouPath": {
+      "type": "string",
+      "metadata": {
+        "description": "Target OU for VM"
       }
     },
+    "ilbID": {
+      "type": "string",
+      "metadata": {
+        "description": "Internal Load Balancer ID"
+      }
+    }
+  },
     "variables": {
       "computeApiVersion": "2017-03-30",
       "domainJoinOptions": "3",
@@ -128,7 +134,12 @@
                 "privateIPAddress": "[parameters('primaryIpAddress')]",
                 "subnet": {
                   "id": "[parameters('subnetResourceID')]"
-                }
+                },
+                "loadBalancerBackendAddressPools": [
+                  {
+                    "id": "[concat(parameters('ilbID'), '/backendAddressPools/BackendPool1')]"
+                  }
+                ]
               }
             }
           ]
