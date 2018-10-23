@@ -148,9 +148,14 @@
     "primaryGW2IpAddress": "10.0.3.18",
     "primaryAADProxy1IpAddress": "10.0.3.20",
     "primaryAADProxy2IpAddress": "10.0.3.21",
+    "ilbADFSprivateIPAddress": "10.0.5.100",
+    "ilbADFSProxyprivateIPAddress": "10.0.6.100",
+    "ilbRDSCBprivateIPAddress": "10.0.3.100",
+    "ilbRDSGWprivateIPAddress": "10.0.3.101",
 
     "vnetTemplateURL": "[concat(variables('assetLocation'),'/data/vNetDeployment.json')]",
     "nsgTemplateURL": "[concat(variables('assetLocation'),'/data/nsgDeployment.json')]",
+    "ilbTemplateURL": "[concat(variables('assetLocation'),'/data/ilbDeployment.json')]",
     "publicIPTemplateURL": "[concat(variables('assetLocation'),'/data/publicIP.json')]",
     "psVPNTemplateURL": "[concat(variables('assetLocation'),'/data/deployPointSiteVPN.json')]",
     "dc1TemplateURL": "[concat(variables('assetLocation'),'/data/dc1Vm.json')]",
@@ -210,6 +215,8 @@
     "deployVNetId": "[concat('Microsoft.Resources/deployments/', variables('deployVNet'))]",
     "deployNSGs": "DeployNSGs",
     "deployNSGsId": "[concat('Microsoft.Resources/deployments/', variables('deployNSGs'))]",
+    "deployILBforADFS": "DeployILBforADFS",
+    "deployILBforADFSId": "[concat('Microsoft.Resources/deployments/', variables('deployILBforADFS'))]",
     "deployPrimaryAd": "ConfigureAD",
     "deployPrimaryAdId": "[concat('Microsoft.Resources/deployments/', variables('deployPrimaryAd'))]",
     "deployDC2Ad": "PromoteDC2toAD",
@@ -318,6 +325,11 @@
     "lbFE": "[concat('ADLBFE',resourceGroup().name)]",
     "rpdNAT": "[concat('ADRDPNAT',resourceGroup().name)]",
     "rdpPort": "3389",
+    "ilbADFSName": "[concat('ilbADFS',resourceGroup().name)]",
+    "ilbADFSProxyName": "[concat('ilbADFSProxy',resourceGroup().name)]",
+    "ilbRDSCBName": "[concat('ilbRDSCB',resourceGroup().name)]",
+    "ilbRDSGWName": "[concat('ilbRDSGW',resourceGroup().name)]",
+
 
     "beNSGName": "[concat('BackEndNSG',resourceGroup().name)]",
     "beNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('beNSGName'))]",
@@ -584,6 +596,23 @@
           "lbFE": { "value": "[variables('lbFE')]" },
           "rpdNAT": { "value": "[variables('rpdNAT')]" },
           "rdpPort": { "value": "[variables('rdpPort')]" }
+        }
+      }
+    },
+    {
+      "name": "[variables('deployILBforADFS')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('deployVNetId')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('ilbTemplateURL')]" },
+        "parameters": {
+          "ilbName": { "value": "[variables('ilbADFSName')]" },
+          "subnetResourceID": { "value": "[variables('adfsSubnetID')]" },
+          "ilbPrivateIPAddress": { "value": "[variables('ilbADFSprivateIPAddress')]" }
         }
       }
     },

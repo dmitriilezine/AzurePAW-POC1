@@ -47,6 +47,8 @@
     <None Include="data\deployRDCB.json" />
     <None Include="data\deployRDGW.json" />
     <None Include="data\deployRDSH.json" />
+    <None Include="data\ilbDeployment.json" />
+    <None Include="data\ilb-reference.json" />
     <None Include="data\ILB-sample.json" />
     <None Include="data\jumpServerVm.json" />
     <None Include="data\nsgDeployment.json" />
@@ -56,7 +58,7 @@
     <None Include="data\psvpn-example-remove.json" />
     <None Include="data\publicIP.json" />
     <None Include="data\rdssample-remove.json" />
-    <None Include="data\registerCertTemplates.json" />
+    <None Include="data\registerCertTemplates-remove.json" />
     <None Include="data\vNetDeployment.json" />
     <None Include="data\vnetDNSupdate.json" />
     <None Include="Deployment.targets">
