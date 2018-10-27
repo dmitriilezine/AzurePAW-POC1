@@ -114,6 +114,145 @@
       "metadata": {
         "description": "Placeholder for CertTemplate to be removed when is working via DIAD deployment"
       }
+    },
+    "vNetIPSpace": {
+      "type": "string",
+      "defaultValue": "10.0",
+      "allowedValues": [
+        "10.0",
+        "10.1",
+        "10.2",
+        "10.3"
+      ],
+      "metadata": {
+        "description": "Specify the IP space for the vNet."
+      }
+    },
+    "DC1VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "DC1-LAB"
+    },
+    "DC2VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "DC2-LAB"
+    },
+    "adcsVMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "CA1-LAB"
+    },
+    "aadConnectVMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "AADConnect-LAB"
+    },
+    "adfs1VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "ADFS1-LAB"
+    },
+    "adfs2VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "ADFS2-LAB"
+    },
+    "adfsProxy1VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "ADFSP1-LAB"
+    },
+    "adfsProxy2VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "ADFSP2-LAB"
+    },
+    "hgsVMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "HGS-LAB"
+    },
+    "adminHost1VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "AdminHost1"
+    },
+    "adminHost2VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "AdminHost2"
+    },
+    "adminHost3VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "AdminHost3"
+    },
+    "ConnectionBrocker1VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "CB1-LAB"
+    },
+    "ConnectionBrocker2VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "CB2-LAB"
+    },
+    "Gateway1VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "GW1-LAB"
+    },
+    "Gateway2VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "GW2-LAB"
+    },
+    "aadProxy1VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "AADP1-LAB"
+    },
+    "aadProxy2VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "Must be compliant with Windows Server naming convention"
+      },
+      "defaultValue": "AADP2-LAB"
     }
   },
   "variables": {
@@ -122,36 +261,66 @@
     "VMSize": "[parameters('VirtualMachineSize')]",
     "OSVersion": "2016-Datacenter",
     "numberOfRdshInstances": 2,
-    "virtualNetworkAddressRange": "10.0.0.0/16",
-    "backendNetworkSubnet": "10.0.1.0/24",
-    "frontendNetworkSubnet": "10.0.2.0/24",
-    "azurepawNetworkSubnet": "10.0.3.0/24",
-    "gatewayNetworkSubnet": "10.0.4.0/24",
-    "adfsNetworkSubnet": "10.0.5.0/24",
-    "adfsProxyNetworkSubnet": "10.0.6.0/24",
-    "primaryDC1IpAddress": "10.0.1.4",
-    "primaryDC2IpAddress": "10.0.1.5",
-    "primaryADCSIpAddress": "10.0.1.6",
-    "primaryAADConnectIpAddress": "10.0.1.7",
-    "primaryADFSIpAddress": "10.0.5.4",
-    "primaryADFS2IpAddress": "10.0.5.5",
-    "primaryHGSIpAddress": "10.0.1.8",
-    "primaryADFSProxyIpAddress": "10.0.6.4",
-    "primaryADFSProxy2IpAddress": "10.0.6.5",
-    "primaryJumpServerIpAddress": "10.0.2.4",
-    "primaryAzurePAW1IpAddress": "10.0.3.4",
-    "primaryAzurePAW2IpAddress": "10.0.3.5",
-    "primaryAzurePAW3IpAddress": "10.0.3.6",
-    "primaryCB1IpAddress": "10.0.3.15",
-    "primaryCB2IpAddress": "10.0.3.16",
-    "primaryGW1IpAddress": "10.0.3.17",
-    "primaryGW2IpAddress": "10.0.3.18",
-    "primaryAADProxy1IpAddress": "10.0.3.20",
-    "primaryAADProxy2IpAddress": "10.0.3.21",
-    "ilbADFSprivateIPAddress": "10.0.5.100",
-    "ilbADFSProxyprivateIPAddress": "10.0.6.100",
-    "ilbRDSCBprivateIPAddress": "10.0.3.100",
-    "ilbRDSGWprivateIPAddress": "10.0.3.101",
+    "virtualNetworkAddressRangeold": "10.0.0.0/16",
+    "virtualNetworkAddressRange": "[concat(parameters('vNetIPSpace'),'.0.0/16')]",
+    "backendNetworkSubnetold": "10.0.1.0/24",
+    "backendNetworkSubnet": "[concat(parameters('vNetIPSpace'),'.1.0/24')]",
+    "frontendNetworkSubnetold": "10.0.2.0/24",
+    "frontendNetworkSubnet": "[concat(parameters('vNetIPSpace'),'.2.0/24')]",
+    "azurepawNetworkSubnetold": "10.0.3.0/24",
+    "azurepawNetworkSubnet": "[concat(parameters('vNetIPSpace'),'.3.0/24')]",
+    "gatewayNetworkSubnetold": "10.0.4.0/24",
+    "gatewayNetworkSubnet": "[concat(parameters('vNetIPSpace'),'.4.0/24')]",
+    "adfsNetworkSubnetold": "10.0.5.0/24",
+    "adfsNetworkSubnet": "[concat(parameters('vNetIPSpace'),'.5.0/24')]",
+    "adfsProxyNetworkSubnetold": "10.0.6.0/24",
+    "adfsProxyNetworkSubnet": "[concat(parameters('vNetIPSpace'),'.6.0/24')]",
+    "primaryDC1IpAddressold": "10.0.1.4",
+    "primaryDC1IpAddress": "[concat(parameters('vNetIPSpace'),'.1.4')]",
+    "primaryDC2IpAddressold": "10.0.1.5",
+    "primaryDC2IpAddress": "[concat(parameters('vNetIPSpace'),'.1.5')]",
+    "primaryADCSIpAddressold": "10.0.1.6",
+    "primaryADCSIpAddress": "[concat(parameters('vNetIPSpace'),'.1.6')]",
+    "primaryAADConnectIpAddressold": "10.0.1.7",
+    "primaryAADConnectIpAddress": "[concat(parameters('vNetIPSpace'),'.1.7')]",
+    "primaryADFSIpAddressold": "10.0.5.4",
+    "primaryADFSIpAddress": "[concat(parameters('vNetIPSpace'),'.5.4')]",
+    "primaryADFS2IpAddressold": "10.0.5.5",
+    "primaryADFS2IpAddress": "[concat(parameters('vNetIPSpace'),'.5.5')]",
+    "primaryHGSIpAddressold": "10.0.1.8",
+    "primaryHGSIpAddress": "[concat(parameters('vNetIPSpace'),'.1.8')]",
+    "primaryADFSProxyIpAddressold": "10.0.6.4",
+    "primaryADFSProxyIpAddress": "[concat(parameters('vNetIPSpace'),'.6.4')]",
+    "primaryADFSProxy2IpAddressold": "10.0.6.5",
+    "primaryADFSProxy2IpAddress": "[concat(parameters('vNetIPSpace'),'.6.5')]",
+    "primaryJumpServerIpAddressold": "10.0.2.4",
+    "primaryJumpServerIpAddress": "[concat(parameters('vNetIPSpace'),'.2.4')]",
+    "primaryAzurePAW1IpAddressold": "10.0.3.4",
+    "primaryAzurePAW1IpAddress": "[concat(parameters('vNetIPSpace'),'.3.4')]",
+    "primaryAzurePAW2IpAddressold": "10.0.3.5",
+    "primaryAzurePAW2IpAddress": "[concat(parameters('vNetIPSpace'),'.3.5')]",
+    "primaryAzurePAW3IpAddressold": "10.0.3.6",
+    "primaryAzurePAW3IpAddress": "[concat(parameters('vNetIPSpace'),'.3.6')]",
+    "primaryCB1IpAddressold": "10.0.3.15",
+    "primaryCB1IpAddress": "[concat(parameters('vNetIPSpace'),'.3.15')]",
+    "primaryCB2IpAddressold": "10.0.3.16",
+    "primaryCB2IpAddress": "[concat(parameters('vNetIPSpace'),'.3.16')]",
+    "primaryGW1IpAddressold": "10.0.3.17",
+    "primaryGW1IpAddress": "[concat(parameters('vNetIPSpace'),'.3.17')]",
+    "primaryGW2IpAddressold": "10.0.3.18",
+    "primaryGW2IpAddress": "[concat(parameters('vNetIPSpace'),'.3.18')]",
+    "primaryAADProxy1IpAddressold": "10.0.3.20",
+    "primaryAADProxy1IpAddress": "[concat(parameters('vNetIPSpace'),'.3.20')]",
+    "primaryAADProxy2IpAddressold": "10.0.3.21",
+    "primaryAADProxy2IpAddress": "[concat(parameters('vNetIPSpace'),'.3.21')]",
+    "ilbADFSprivateIPAddressold": "10.0.5.100",
+    "ilbADFSprivateIPAddress": "[concat(parameters('vNetIPSpace'),'.5.100')]",
+    "ilbADFSProxyprivateIPAddressold": "10.0.6.100",
+    "ilbADFSProxyprivateIPAddress": "[concat(parameters('vNetIPSpace'),'.6.100')]",
+    "ilbRDSCBprivateIPAddressold": "10.0.3.100",
+    "ilbRDSCBprivateIPAddress": "[concat(parameters('vNetIPSpace'),'.3.100')]",
+    "ilbRDSGWprivateIPAddressold": "10.0.3.101",
+    "ilbRDSGWprivateIPAddress": "[concat(parameters('vNetIPSpace'),'.3.101')]",
 
     "vnetTemplateURL": "[concat(variables('assetLocation'),'/data/vNetDeployment.json')]",
     "nsgTemplateURL": "[concat(variables('assetLocation'),'/data/nsgDeployment.json')]",
@@ -185,25 +354,43 @@
     "deployRDSHTemplateURL": "[concat(variables('assetLocation'),'/data/deployRDSH.json')]",
     "deployAADProxyTemplateURL": "[concat(variables('assetLocation'),'/data/deployAADProxy.json')]",
 
-    "dc1VMName": "[substring(concat('DC1-',resourceGroup().Name),0,5)]",
-    "dc2VMName": "[substring(concat('DC2-',resourceGroup().Name),0,5)]",
-    "adcsVMName": "[substring(concat('CA1-',resourceGroup().Name),0,5)]",
-    "aadConnectVMName": "[substring(concat('AADC1',resourceGroup().Name),0,5)]",
+    "dc1VMNameold": "[substring(concat('DC1-',resourceGroup().Name),0,5)]",
+    "dc1VMName": "[parameters('DC1VMName')]",
+    "dc2VMNameold": "[substring(concat('DC2-',resourceGroup().Name),0,5)]",
+    "dc2VMName": "[parameters('DC2VMName')]",
+    "adcsVMNameold": "[substring(concat('CA1-',resourceGroup().Name),0,5)]",
+    "adcsVMName": "[parameters('adcsVMName')]",
+    "aadConnectVMNameold": "[substring(concat('AADC1',resourceGroup().Name),0,5)]",
+    "aadConnectVMName": "[parameters('aadConnectVMName')]",
     "jumpVMName": "[substring(concat('JumpBox',resourceGroup().Name),0,7)]",
-    "adfsVMName": "[substring(concat('ADFS1',resourceGroup().Name),0,5)]",
-    "adfsVM2Name": "[substring(concat('ADFS2',resourceGroup().Name),0,5)]",
-    "adfsProxyVMName": "[substring(concat('ADFSProxy',resourceGroup().Name),0,9)]",
-    "adfsProxyVM2Name": "[substring(concat('ADFSProxy2',resourceGroup().Name),0,10)]",
-    "hgsVMName": "[substring(concat('HGS-',resourceGroup().Name),0,5)]",
-    "paw1VMName": "[substring(concat('PAW-1',resourceGroup().Name),0,5)]",
-    "paw2VMName": "[substring(concat('PAW-2',resourceGroup().Name),0,5)]",
-    "paw3VMName": "[substring(concat('PAW-3',resourceGroup().Name),0,5)]",
-    "cb1VMName": "[substring(concat('CB1-',resourceGroup().Name),0,5)]",
-    "cb2VMName": "[substring(concat('CB2-',resourceGroup().Name),0,5)]",
-    "gw1VMName": "[substring(concat('GW1-',resourceGroup().Name),0,5)]",
-    "gw2VMName": "[substring(concat('GW2-',resourceGroup().Name),0,5)]",
-    "aadProxy1VMName": "[substring(concat('AADProxy1',resourceGroup().Name),0,9)]",
-    "aadProxy2VMName": "[substring(concat('AADProxy2',resourceGroup().Name),0,9)]",
+    "adfsVMNameold": "[substring(concat('ADFS1',resourceGroup().Name),0,5)]",
+    "adfsVMName": "[parameters('adfs1VMName')]",
+    "adfsVM2Nameold": "[substring(concat('ADFS2',resourceGroup().Name),0,5)]",
+    "adfsVM2Name": "[parameters('adfs2VMName')]",
+    "adfsProxyVMNameold": "[substring(concat('ADFSProxy',resourceGroup().Name),0,9)]",
+    "adfsProxyVMName": "[parameters('adfsProxy1VMName')]",
+    "adfsProxyVM2Nameold": "[substring(concat('ADFSProxy2',resourceGroup().Name),0,10)]",
+    "adfsProxyVM2Name": "[parameters('adfsProxy2VMName')]",
+    "hgsVMNameold": "[substring(concat('HGS-',resourceGroup().Name),0,5)]",
+    "hgsVMName": "[parameters('hgsVMName')]",
+    "paw1VMNameold": "[substring(concat('PAW-1',resourceGroup().Name),0,5)]",
+    "paw1VMName": "[parameters('adminHost1VMName')]",
+    "paw2VMNameold": "[substring(concat('PAW-2',resourceGroup().Name),0,5)]",
+    "paw2VMName": "[parameters('adminHost2VMName')]",
+    "paw3VMNameold": "[substring(concat('PAW-3',resourceGroup().Name),0,5)]",
+    "paw3VMName": "[parameters('adminHost3VMName')]",
+    "cb1VMNameold": "[substring(concat('CB1-',resourceGroup().Name),0,5)]",
+    "cb1VMName": "[parameters('ConnectionBrocker1VMName')]",
+    "cb2VMNameold": "[substring(concat('CB2-',resourceGroup().Name),0,5)]",
+    "cb2VMName": "[parameters('ConnectionBrocker2VMName')]",
+    "gw1VMNameold": "[substring(concat('GW1-',resourceGroup().Name),0,5)]",
+    "gw1VMName": "[parameters('Gateway1VMName')]",
+    "gw2VMNameold": "[substring(concat('GW2-',resourceGroup().Name),0,5)]",
+    "gw2VMName": "[parameters('Gateway2VMName')]",
+    "aadProxy1VMNameold": "[substring(concat('AADProxy1',resourceGroup().Name),0,9)]",
+    "aadProxy1VMName": "[parameters('aadProxy1VMName')]",
+    "aadProxy2VMNameold": "[substring(concat('AADProxy2',resourceGroup().Name),0,9)]",
+    "aadProxy2VMName": "[parameters('aadProxy2VMName')]",
 
     "dnsPrefix": "[tolower(concat(resourceGroup().name,'jump'))]",
 
@@ -339,7 +526,7 @@
     "ilbRDSCBID": "[resourceId('Microsoft.Network/loadBalancers',variables('ilbRDSCBName'))]",
     "ilbRDSGWName": "[concat('ilbRDSGW',resourceGroup().name)]",
     "ilbRDSGWID": "[resourceId('Microsoft.Network/loadBalancers',variables('ilbRDSGWName'))]",
-    
+
     "beNSGName": "[concat('BackEndNSG',resourceGroup().name)]",
     "beNSGID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('beNSGName'))]",
     "feNSGName": "[concat('FrontEndNSG',resourceGroup().name)]",
