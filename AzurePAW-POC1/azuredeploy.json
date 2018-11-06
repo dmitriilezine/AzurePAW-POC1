@@ -101,7 +101,40 @@
         "Yes"
       ],
       "metadata": {
-        "description": "Deploy Point to Site VPN"
+        "description": "Deploy AAD Connect"
+      }
+    },
+    "deployRDS": {
+      "type": "string",
+      "defaultValue": "Yes",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "Deploy RDS"
+      }
+    },
+    "deployADFS": {
+      "type": "string",
+      "defaultValue": "Yes",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "Deploy ADFS"
+      }
+    },
+    "deployAADAppProxy": {
+      "type": "string",
+      "defaultValue": "Yes",
+      "allowedValues": [
+        "No",
+        "Yes"
+      ],
+      "metadata": {
+        "description": "Deploy AAD App Proxy"
       }
     },
     "createCertTemplates": {
@@ -796,6 +829,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "name": "[variables('deployILBforADFS')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -813,6 +847,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "name": "[variables('deployILBforADFSProxy')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -830,6 +865,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "name": "[variables('deployILBforRDSCB')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -847,6 +883,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "name": "[variables('deployILBforRDSGW')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -1306,6 +1343,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "comments": "Deploy ADFS VM",
       "name": "[variables('adfsVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1367,6 +1405,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "comments": "Deploy ADFS VM 2",
       "name": "[variables('adfsVm2Deployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1428,6 +1467,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "comments": "Deploy ADFS Proxy VM. It is deployed if ADFS VM is deployed first.",
       "name": "[variables('adfsProxyVmDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1483,6 +1523,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "comments": "Deploy ADFS Proxy VM 2. It is deployed if ADFS VM is deployed first.",
       "name": "[variables('adfsProxyVm2Deployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1588,6 +1629,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy Azure PAW #1 VM",
       "name": "[variables('paw1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1640,6 +1682,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy Azure PAW #2 VM",
       "name": "[variables('paw2VmDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1692,6 +1735,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy Azure PAW #3 VM",
       "name": "[variables('paw3VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1744,6 +1788,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy RDS CB and LS VM #1",
       "name": "[variables('cb1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1796,6 +1841,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy RDS CB and LS VM #2",
       "name": "[variables('cb2VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1848,6 +1894,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy RDS GW and Web VM #1",
       "name": "[variables('gw1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1900,6 +1947,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy RDS GW and Web VM #2",
       "name": "[variables('gw2VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -1952,6 +2000,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployAADAppProxy'),'Yes')]",
       "comments": "Deploy AAD App Proxy VM #1",
       "name": "[variables('aadProxy1VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -2004,6 +2053,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployAADAppProxy'),'Yes')]",
       "comments": "Deploy AAD App Proxy VM #2",
       "name": "[variables('aadProxy2VMDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -2151,6 +2201,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "comments": "Install ADFS Role",
       "name": "[variables('adfsFarmTemplatesDeployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -2210,6 +2261,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployADFS'),'Yes')]",
       "comments": "Deploy ADFS Farm on VM2",
       "name": "[variables('adfsFarmTemplatesDeploymentonVM2')]",
       "type": "Microsoft.Resources/deployments",
@@ -2416,6 +2468,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy RDCB and RDLS on CB VM",
       "name": "[variables('cb1Deployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -2474,6 +2527,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy RDGW and RDWeb on GW VM",
       "name": "[variables('gw1Deployment')]",
       "type": "Microsoft.Resources/deployments",
@@ -2524,6 +2578,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy RDSH on PAW1 - this needs to be changed to loop",
       "name": "[variables('rdshDeploymentOnPAW1')]",
       "type": "Microsoft.Resources/deployments",
@@ -2575,6 +2630,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployRDS'),'Yes')]",
       "comments": "Deploy RDSH on PAW2 - this needs to be changed to loop",
       "name": "[variables('rdshDeploymentOnPAW2')]",
       "type": "Microsoft.Resources/deployments",
@@ -2626,6 +2682,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('deployAADAppProxy'),'Yes')]",
       "comments": "Deploy AAD Proxy on VM",
       "name": "[variables('aadProxy1Deployment')]",
       "type": "Microsoft.Resources/deployments",
