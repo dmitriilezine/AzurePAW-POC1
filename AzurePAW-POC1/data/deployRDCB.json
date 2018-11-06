@@ -57,7 +57,7 @@
       }
     },
     "sessionHost": {
-      "type": "int",
+      "type": "string",
       "metadata": {
         "description": "Name of the first Session Host"
       }
