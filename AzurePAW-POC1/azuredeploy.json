@@ -2504,6 +2504,9 @@
           "numberOfRdshInstances": {
             "value": "[variables('numberOfRdshInstances')]"
           },
+          "sessionHost": {
+            "value": "[variables('paw1VMName')]"
+          },
           "assetLocationStorageAccount": {
             "value": "[variables('assetLocationStorageAccount')]"
           },

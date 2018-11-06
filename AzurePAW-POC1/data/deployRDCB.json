@@ -50,14 +50,18 @@
         "description": "Key for the Storage account"
       }
     },
-
     "numberOfRdshInstances": {
       "type": "int",
       "metadata": {
         "description": "Number of Remote Desktop Session Hosts"
       }
+    },
+    "sessionHost": {
+      "type": "int",
+      "metadata": {
+        "description": "Name of the first Session Host"
+      }
     }
-
   },
   "variables": {
     "ModulesURL": "[concat(parameters('assetLocationStorageAccount'),'/scripts/RDSConfiguration.zip')]",
@@ -95,7 +99,7 @@
             "domainName": "[parameters('domainName')]",
             "externalfqdn": "[variables('gatewayIpRef')]",
             "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
-            "sessionHostNamingPrefix": "[variables('sessionHostNamingPrefix')]",
+            "sessionHostNamingPrefix": "[parameters('sessionHost')]",
             "webAccessServer": "[variables('webAccessServer')]",
             "CACommonName": "[variables('CACommonName')]",
             "DNSName": "[variables('DNSName')]"
